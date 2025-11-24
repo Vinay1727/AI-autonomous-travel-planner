@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Places - HCATA</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/theme.css">
+
+    <style>
+        .category-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .category-tab {
+            padding: 1rem 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .category-tab:hover {
+            background: var(--medium-dark);
+        }
+
+        .category-tab.active {
+            background: var(--gold);
+            color: var(--pure-black);
+            border-color: var(--gold);
+        }
+
+        .shopping-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .shopping-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .shopping-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: var(--shadow);
+        }
+
+        .shopping-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: var(--medium-dark);
+        }
+
+        .shopping-content {
+            padding: 1.5rem;
+        }
+
+        .shopping-name {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            color: var(--gold);
+        }
+
+        .shopping-address {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: start;
+            gap: 0.5rem;
+        }
+
+        .shopping-distance {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .famous-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--gold);
+            color: var(--pure-black);
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .category-section {
+            display: none;
+        }
+
+        .category-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-plane-departure"></i>
+                <span>HCATA</span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../home.html" class="nav-link">Home</a></li>
+                <li><a href="flights.html" class="nav-link">Flights</a></li>
+                <li><a href="hotels.html" class="nav-link">Hotels</a></li>
+                <li><a href="itinerary.html" class="nav-link">Itinerary</a></li>
+                <li><a href="shopping.html" class="nav-link active">Shopping</a></li>
+                <li><a href="news.html" class="nav-link">News</a></li>
+                <li><a href="more.html" class="nav-link"></a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <section style="padding-top: 120px; min-height: 100vh; padding-bottom: 4rem;">
+        <div class="container">
+            <div class="section-header">
+                <h1 class="section-title">Shopping Places</h1>
+                <p class="section-subtitle">Discover malls, local markets, and retail areas</p>
+            </div>
+
+            <div class="card" style="max-width: 600px; margin: 0 auto 3rem;">
+                <form id="shoppingForm">
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-map-marker-alt"></i> Location</label>
+                        <input type="text" class="form-control" id="location" placeholder="Delhi" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-search"></i> Find Shopping Places
+                    </button>
+                </form>
+            </div>
+
+            <!-- Category Tabs -->
+            <div class="category-tabs" id="categoryTabs" style="display: none;">
+                <button class="category-tab active" data-category="all">
+                    <i class="fas fa-th"></i> All Places
+                </button>
+                <button class="category-tab" data-category="shopping_malls">
+                    <i class="fas fa-building"></i> Shopping Malls
+                </button>
+                <button class="category-tab" data-category="local_markets">
+                    <i class="fas fa-store"></i> Local Markets
+                </button>
+                <button class="category-tab" data-category="retail_areas">
+                    <i class="fas fa-shopping-bag"></i> Retail Areas
+                </button>
+                <button class="category-tab" data-category="supermarkets">
+                    <i class="fas fa-shopping-cart"></i> Supermarkets
+                </button>
+            </div>
+
+            <!-- Results -->
+            <div id="results"></div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>HCATA</h4>
+                    <p style="color: var(--text-secondary); line-height: 1.8;">Your premium AI-powered travel companion.
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="flights.html">Flights</a></li>
+                        <li><a href="hotels.html">Hotels</a></li>
+                        <li><a href="shopping.html">Shopping</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="news.html">Travel News</a></li>
+                        <li><a href="more.html">More</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> info@hcata.ai</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 HCATA. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../assets/js/common.js"></script>
+    <script>
+        let allPlaces = {};
+        let currentCategory = 'all';
+
+        document.getElementById('shoppingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const location = document.getElementById('location').value;
+            showLoading('results');
+
+            try {
+                const response = await apiCall('/api/shopping/places', { city: location });
+
+                if (response.success && response.places) {
+                    allPlaces = response.places;
+                    document.getElementById('categoryTabs').style.display = 'flex';
+                    displayPlaces('all');
+
+                    if (response.is_mock) {
+                        showToast('Showing demo data (API key not configured)');
+                    } else {
+                        showToast('Shopping places loaded!');
+                    }
+                } else {
+                    showError('results', 'No shopping places found');
+                }
+            } catch (error) {
+                showError('results', 'Failed to load shopping places');
+                console.error(error);
+            }
+        });
+
+        // Category tab switching
+        document.querySelectorAll('.category-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const category = tab.dataset.category;
+
+                document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                displayPlaces(category);
+            });
+        });
+
+        function displayPlaces(category) {
+            currentCategory = category;
+            let places = [];
+
+            if (category === 'all') {
+                places = allPlaces.all_places || [];
+            } else {
+                places = allPlaces[category] || [];
+            }
+
+            if (!places || places.length === 0) {
+                document.getElementById('results').innerHTML = `
+                    <div class="text-center" style="padding: 3rem;">
+                        <i class="fas fa-shopping-bag" style="font-size: 4rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
+                        <p style="color: var(--text-secondary);">No places found in this category.</p>
+                    </div>
+                `;
+            } else {
+                const html = `
+                    <div class="shopping-grid">
+                        ${places.map(place => `
+                            <div class="shopping-card">
+                                <img src="${place.image_url || '../assets/images/placeholder.jpg'}" 
+                                     alt="${place.name}" 
+                                     class="shopping-image"
+                                     onerror="this.src='../assets/images/placeholder.jpg'">
+                                <div class="shopping-content">
+                                    <h3 class="shopping-name">
+                                        ${place.name}
+                                        ${place.is_famous ? '<span class="famous-badge">POPULAR</span>' : ''}
+                                    </h3>
+                                    <div class="shopping-address">
+                                        <i class="fas fa-map-marker-alt" style="color: var(--gold); margin-top: 0.25rem;"></i>
+                                        <span>${place.address || 'Address not available'}</span>
+                                    </div>
+                                    <div class="shopping-distance">
+                                        <i class="fas fa-walking"></i>
+                                        <span>${place.distance_km} km away</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+
+                document.getElementById('results').innerHTML = html;
+            }
+        }
+
+        // Auto-load Delhi on page load
+        window.addEventListener('load', () => {
+            document.getElementById('location').value = 'Delhi';
+            document.getElementById('shoppingForm').dispatchEvent(new Event('submit'));
+        });
+    </script>
+</body>
+
+</html>

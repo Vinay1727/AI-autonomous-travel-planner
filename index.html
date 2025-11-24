@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HCATA- Premium Travel Companion</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-plane-departure"></i>
+                <span>HCATA-Premium Travel Companion</span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="#search" class="nav-link">Search</a></li>
+                <li><a href="#destinations" class="nav-link">Destinations</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-video">
+            <video autoplay muted loop playsinline>
+                <source src="https://cdn.coverr.co/videos/coverr-aerial-view-of-beautiful-resort-4739/1080p.mp4"
+                    type="video/mp4">
+            </video>
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-title">Discover Your Next Adventure</h1>
+            <p class="hero-subtitle">AI-Powered Luxury Travel Planning at Your Fingertips</p>
+            <button class="btn btn-primary" onclick="scrollToSection('search')">
+                Start Planning <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Premium Travel Services</h2>
+                <p class="section-subtitle">Experience the future of travel planning with our AI-powered platform</p>
+            </div>
+
+            <div class="features-grid">
+                <!-- Chat Agent -->
+                <div class="feature-card glass">
+                    <div class="feature-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3>AI Travel Assistant</h3>
+                    <p>Chat with our intelligent AI to get personalized travel recommendations and instant answers</p>
+                </div>
+
+                <!-- Flight Search -->
+                <div class="feature-card glass">
+                    <div class="feature-icon">
+                        <i class="fas fa-plane"></i>
+                    </div>
+                    <h3>Smart Flight Search</h3>
+                    <p>Find the best flight deals with real-time pricing and multiple booking options</p>
+                </div>
+
+                <!-- Weather -->
+                <div class="feature-card glass">
+                    <div class="feature-icon">
+                        <i class="fas fa-cloud-sun"></i>
+                    </div>
+                    <h3>Weather Forecast</h3>
+                    <p>Get accurate weather predictions for your destination to pack perfectly</p>
+                </div>
+
+                <!-- Hotels -->
+                <div class="feature-card glass">
+                    <div class="feature-icon">
+                        <i class="fas fa-hotel"></i>
+                    </div>
+                    <h3>Luxury Hotels</h3>
+                    <p>Discover premium accommodations tailored to your preferences and budget</p>
+                </div>
+
+                <!-- Budget -->
+                <div class="feature-card glass">
+                    <div class="feature-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h3>Budget Planner</h3>
+                    <p>Estimate your travel costs and manage your budget effectively</p>
+                </div>
+
+                <!-- Activities -->
+                <div class="feature-card glass">
+                    <div class="feature-icon">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <h3>Activities & Tours</h3>
+                    <p>Explore curated experiences and activities at your destination</p>
+                </div>
+
+                <!-- Currency -->
+                <div class="feature-card glass">
+                    <div class="feature-icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <h3>Currency Converter</h3>
+                    <p>Convert currencies with real-time exchange rates for accurate planning</p>
+                </div>
+
+                <!-- Cuisine -->
+                <div class="feature-card glass">
+                    <div class="feature-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h3>Culinary Guide</h3>
+                    <p>Discover local cuisines and top-rated restaurants at your destination</p>
+                </div>
+
+                <!-- Attractions -->
+                <div class="feature-card glass">
+                    <div class="feature-icon">
+                        <i class="fas fa-landmark"></i>
+                    </div>
+                    <h3>Top Attractions</h3>
+                    <p>Never miss must-see landmarks and hidden gems</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Hub Section -->
+    <section class="search-hub" id="search">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Plan Your Journey</h2>
+                <p class="section-subtitle">Use our powerful tools to create the perfect itinerary</p>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="chat">
+                    <i class="fas fa-comments"></i> AI Chat
+                </button>
+                <button class="tab-btn" data-tab="flights">
+                    <i class="fas fa-plane"></i> Flights
+                </button>
+                <button class="tab-btn" data-tab="weather">
+                    <i class="fas fa-cloud-sun"></i> Weather
+                </button>
+                <button class="tab-btn" data-tab="hotels">
+                    <i class="fas fa-hotel"></i> Hotels
+                </button>
+                <button class="tab-btn" data-tab="budget">
+                    <i class="fas fa-calculator"></i> Budget
+                </button>
+                <button class="tab-btn" data-tab="currency">
+                    <i class="fas fa-exchange-alt"></i> Currency
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content-container">
+                <!-- Chat Tab -->
+                <div class="tab-content active" id="chat-tab">
+                    <div class="chat-container glass">
+                        <div class="chat-messages" id="chatMessages">
+                            <div class="chat-message bot">
+                                <div class="message-avatar">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div class="message-content">
+                                    <p>Hello! I'm your AI travel assistant. How can I help you plan your perfect trip
+                                        today?</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-input-container">
+                            <input type="text" id="chatInput" placeholder="Ask me anything about travel..."
+                                class="chat-input">
+                            <button class="btn btn-primary" onclick="sendChatMessage()">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flights Tab -->
+                <div class="tab-content" id="flights-tab">
+                    <div class="search-card glass">
+                        <form id="flightForm" onsubmit="searchFlights(event)">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label><i class="fas fa-plane-departure"></i> From</label>
+                                    <input type="text" id="flightFrom" placeholder="New York" required>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-plane-arrival"></i> To</label>
+                                    <input type="text" id="flightTo" placeholder="Paris" required>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-calendar"></i> Date</label>
+                                    <input type="date" id="flightDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-users"></i> Passengers</label>
+                                    <input type="number" id="flightPassengers" value="1" min="1" max="9">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fas fa-search"></i> Search Flights
+                            </button>
+                        </form>
+                        <div id="flightResults" class="results-container"></div>
+                    </div>
+                </div>
+
+                <!-- Weather Tab -->
+                <div class="tab-content" id="weather-tab">
+                    <div class="search-card glass">
+                        <form id="weatherForm" onsubmit="getWeather(event)">
+                            <div class="form-group">
+                                <label><i class="fas fa-map-marker-alt"></i> Destination</label>
+                                <input type="text" id="weatherCity" placeholder="Enter city name" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fas fa-search"></i> Get Weather
+                            </button>
+                        </form>
+                        <div id="weatherResults" class="results-container"></div>
+                    </div>
+                </div>
+
+                <!-- Hotels Tab -->
+                <div class="tab-content" id="hotels-tab">
+                    <div class="search-card glass">
+                        <form id="hotelForm" onsubmit="searchHotels(event)">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label><i class="fas fa-map-marker-alt"></i> City</label>
+                                    <input type="text" id="hotelCity" placeholder="Paris" required>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-calendar-check"></i> Check-in</label>
+                                    <input type="date" id="hotelCheckin" required>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-calendar-times"></i> Check-out</label>
+                                    <input type="date" id="hotelCheckout" required>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-users"></i> Guests</label>
+                                    <input type="number" id="hotelGuests" value="2" min="1" max="10">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fas fa-search"></i> Search Hotels
+                            </button>
+                        </form>
+                        <div id="hotelResults" class="results-container"></div>
+                    </div>
+                </div>
+
+                <!-- Budget Tab -->
+                <div class="tab-content" id="budget-tab">
+                    <div class="search-card glass">
+                        <form id="budgetForm" onsubmit="calculateBudget(event)">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label><i class="fas fa-map-marker-alt"></i> Destination</label>
+                                    <input type="text" id="budgetDest" placeholder="Paris" required>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-calendar"></i> Days</label>
+                                    <input type="number" id="budgetDays" value="7" min="1" max="30">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label><i class="fas fa-star"></i> Budget Level</label>
+                                    <select id="budgetLevel">
+                                        <option value="Budget">Budget</option>
+                                        <option value="Moderate" selected>Moderate</option>
+                                        <option value="Luxury">Luxury</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fas fa-calculator"></i> Calculate Budget
+                            </button>
+                        </form>
+                        <div id="budgetResults" class="results-container"></div>
+                    </div>
+                </div>
+
+                <!-- Currency Tab -->
+                <div class="tab-content" id="currency-tab">
+                    <div class="search-card glass">
+                        <form id="currencyForm" onsubmit="convertCurrency(event)">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label><i class="fas fa-dollar-sign"></i> Amount</label>
+                                    <input type="number" id="currencyAmount" value="100" min="0" step="0.01" required>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-money-bill"></i> From</label>
+                                    <select id="currencyFrom">
+                                        <option value="USD" selected>USD</option>
+                                        <option value="EUR">EUR</option>
+                                        <option value="GBP">GBP</option>
+                                        <option value="JPY">JPY</option>
+                                        <option value="INR">INR</option>
+                                        <option value="AUD">AUD</option>
+                                        <option value="CAD">CAD</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-exchange-alt"></i> To</label>
+                                    <select id="currencyTo">
+                                        <option value="USD">USD</option>
+                                        <option value="EUR" selected>EUR</option>
+                                        <option value="GBP">GBP</option>
+                                        <option value="JPY">JPY</option>
+                                        <option value="INR">INR</option>
+                                        <option value="AUD">AUD</option>
+                                        <option value="CAD">CAD</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fas fa-exchange-alt"></i> Convert
+                            </button>
+                        </form>
+                        <div id="currencyResults" class="results-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Destinations Section -->
+    <section class="destinations" id="destinations">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Popular Destinations</h2>
+                <p class="section-subtitle">Explore the world's most sought-after travel destinations</p>
+            </div>
+
+            <div class="destinations-grid">
+                <div class="destination-card"
+                    style="background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800');">
+                    <div class="destination-overlay">
+                        <h3>Paris, France</h3>
+                        <p>The City of Light</p>
+                        <button class="btn btn-secondary" onclick="exploreDestination('Paris')">Explore</button>
+                    </div>
+                </div>
+
+                <div class="destination-card"
+                    style="background-image: url('https://images.unsplash.com/photo-1513407030348-c983a97b98d8?w=800');">
+                    <div class="destination-overlay">
+                        <h3>Tokyo, Japan</h3>
+                        <p>Where Tradition Meets Future</p>
+                        <button class="btn btn-secondary" onclick="exploreDestination('Tokyo')">Explore</button>
+                    </div>
+                </div>
+
+                <div class="destination-card"
+                    style="background-image: url('https://images.unsplash.com/photo-1485738422979-f5c462d49f74?w=800');">
+                    <div class="destination-overlay">
+                        <h3>New York, USA</h3>
+                        <p>The City That Never Sleeps</p>
+                        <button class="btn btn-secondary" onclick="exploreDestination('New York')">Explore</button>
+                    </div>
+                </div>
+
+                <div class="destination-card"
+                    style="background-image: url('https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800');">
+                    <div class="destination-overlay">
+                        <h3>London, UK</h3>
+                        <p>Royal Heritage & Modern Culture</p>
+                        <button class="btn btn-secondary" onclick="exploreDestination('London')">Explore</button>
+                    </div>
+                </div>
+
+                <div class="destination-card"
+                    style="background-image: url('https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800');">
+                    <div class="destination-overlay">
+                        <h3>Bali, Indonesia</h3>
+                        <p>Tropical Paradise</p>
+                        <button class="btn btn-secondary" onclick="exploreDestination('Bali')">Explore</button>
+                    </div>
+                </div>
+
+                <div class="destination-card"
+                    style="background-image: url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800');">
+                    <div class="destination-overlay">
+                        <h3>Dubai, UAE</h3>
+                        <p>Luxury & Innovation</p>
+                        <button class="btn btn-secondary" onclick="exploreDestination('Dubai')">Explore</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3><i class="fas fa-plane-departure"></i> LuxeTravel AI</h3>
+                    <p>Your premium AI-powered travel companion for unforgettable journeys around the world.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#search">Search</a></li>
+                        <li><a href="#destinations">Destinations</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#search">Flight Booking</a></li>
+                        <li><a href="#search">Hotel Reservations</a></li>
+                        <li><a href="#search">Travel Planning</a></li>
+                        <li><a href="#search">AI Assistant</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Contact Us</h4>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> info@luxetravel.ai</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Travel St, NY 10001</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 LuxeTravel AI. All rights reserved. | Powered by AI</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script src="assets/js/app.js"></script>
+</body>
+
+</html>

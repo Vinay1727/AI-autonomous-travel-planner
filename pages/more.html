@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>More - HCATA-PremiumTravel</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/theme.css">
+</head>
+
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-plane-departure"></i>
+                <span>HCATA-PremiumTravel</span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../home.html" class="nav-link">Home</a></li>
+                <li><a href="flights.html" class="nav-link">Flights</a></li>
+                <li><a href="hotels.html" class="nav-link">Hotels</a></li>
+                <li><a href="itinerary.html" class="nav-link">Itinerary</a></li>
+                <li><a href="destinations.html" class="nav-link">Destinations</a></li>
+                <li><a href="news.html" class="nav-link">Travel News</a></li>
+                <li><a href="more.html" class="nav-link active">More</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <section style="padding-top: 120px; min-height: 100vh; padding-bottom: 4rem;">
+        <div class="container">
+            <div class="section-header">
+                <h1 class="section-title">More Features</h1>
+                <p class="section-subtitle">Additional tools and utilities for your travel planning</p>
+            </div>
+
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div class="card" style="margin-bottom: 2rem;">
+                    <h2 style="color: var(--gold); margin-bottom: 1.5rem;">
+                        <i class="fas fa-exchange-alt"></i> Currency Converter
+                    </h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                        Convert between major currencies with real-time exchange rates.
+                    </p>
+
+                    <!-- Currency Converter Inline -->
+                    <div id="currencyConverterInline">
+                        <div class="grid grid-3" style="margin-bottom: 1.5rem;">
+                            <div class="form-group">
+                                <label class="form-label">Amount</label>
+                                <input type="number" class="form-control" id="amount" value="100" min="0" step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">From</label>
+                                <select class="form-control" id="fromCurrency">
+                                    <option value="USD">USD - US Dollar</option>
+                                    <option value="EUR">EUR - Euro</option>
+                                    <option value="GBP">GBP - British Pound</option>
+                                    <option value="JPY">JPY - Japanese Yen</option>
+                                    <option value="INR">INR - Indian Rupee</option>
+                                    <option value="AUD">AUD - Australian Dollar</option>
+                                    <option value="CAD">CAD - Canadian Dollar</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">To</label>
+                                <select class="form-control" id="toCurrency">
+                                    <option value="USD">USD - US Dollar</option>
+                                    <option value="EUR" selected>EUR - Euro</option>
+                                    <option value="GBP">GBP - British Pound</option>
+                                    <option value="JPY">JPY - Japanese Yen</option>
+                                    <option value="INR">INR - Indian Rupee</option>
+                                    <option value="AUD">AUD - Australian Dollar</option>
+                                    <option value="CAD">CAD - Canadian Dollar</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                            <button class="btn btn-primary" id="convertBtn" style="flex: 1;">
+                                <i class="fas fa-exchange-alt"></i> Convert
+                            </button>
+                            <button class="btn btn-secondary" id="swapBtn">
+                                <i class="fas fa-sync-alt"></i> Swap
+                            </button>
+                        </div>
+
+                        <div id="conversionResult"
+                            style="display: none; padding: 1.5rem; background: rgba(212, 175, 55, 0.1); border: 1px solid var(--gold); border-radius: 4px;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 2rem; color: var(--gold); font-weight: 700; margin-bottom: 0.5rem;"
+                                    id="resultAmount"></div>
+                                <div style="color: var(--text-secondary); font-size: 0.9rem;" id="resultRate"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 style="color: var(--gold); margin-bottom: 1.5rem;">
+                        <i class="fas fa-info-circle"></i> About LuxeTravel
+                    </h2>
+                    <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 1rem;">
+                        LuxeTravel is your premium AI-powered travel companion, designed to make your travel planning
+                        seamless and enjoyable.
+                    </p>
+                    <p style="color: var(--text-secondary); line-height: 1.8;">
+                        From flight searches to hotel bookings, itinerary planning to destination guides, we've got
+                        everything you need for your perfect trip.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>HCATA-Premium Travel</h4>
+                    <p style="color: var(--text-secondary); line-height: 1.8;">Your premium AI-powered travel companion.
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="flights.html">Flights</a></li>
+                        <li><a href="hotels.html">Hotels</a></li>
+                        <li><a href="itinerary.html">Itinerary</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="news.html">Travel News</a></li>
+                        <li><a href="more.html">More</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> ns451507@gmail.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 HCATA-Premium Travel. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../assets/js/common.js"></script>
+    <script>
+        // Currency Converter Logic
+        const convertBtn = document.getElementById('convertBtn');
+        const swapBtn = document.getElementById('swapBtn');
+        const resultDiv = document.getElementById('conversionResult');
+
+        convertBtn.addEventListener('click', async () => {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const from = document.getElementById('fromCurrency').value;
+            const to = document.getElementById('toCurrency').value;
+
+            if (!amount || amount <= 0) {
+                showToast('Please enter a valid amount', 'error');
+                return;
+            }
+
+            try {
+                const response = await apiCall('/api/currency/convert', {
+                    amount: amount,
+                    from_currency: from,
+                    to_currency: to
+                });
+
+                if (response.success && response.data) {
+                    document.getElementById('resultAmount').textContent =
+                        `${response.data.converted_amount.toFixed(2)} ${to}`;
+                    document.getElementById('resultRate').textContent =
+                        `1 ${from} = ${response.data.exchange_rate.toFixed(4)} ${to}`;
+                    resultDiv.style.display = 'block';
+                    showToast('Conversion successful!');
+                } else {
+                    showToast('Conversion failed', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('Failed to convert currency', 'error');
+            }
+        });
+
+        swapBtn.addEventListener('click', () => {
+            const from = document.getElementById('fromCurrency').value;
+            const to = document.getElementById('toCurrency').value;
+            document.getElementById('fromCurrency').value = to;
+            document.getElementById('toCurrency').value = from;
+            resultDiv.style.display = 'none';
+        });
+
+        // Auto-convert on page load
+        window.addEventListener('load', () => {
+            convertBtn.click();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotels & Dining - LuxeTravel</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/theme.css">
+
+    <style>
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            padding: 1rem 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .tab-btn:hover {
+            background: var(--medium-dark);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .tab-btn.active {
+            background: var(--gold);
+            color: var(--pure-black);
+            border-color: var(--gold);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .hotel-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .hotel-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: var(--shadow);
+        }
+
+        .restaurant-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .restaurant-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .restaurant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-plane-departure"></i>
+                <span>LuxeTravel</span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../home.html" class="nav-link">Home</a></li>
+                <li><a href="flights.html" class="nav-link">Flights</a></li>
+                <li><a href="hotels.html" class="nav-link active">Hotels</a></li>
+                <li><a href="itinerary.html" class="nav-link">Itinerary</a></li>
+                <li><a href="destinations.html" class="nav-link">Destinations</a></li>
+                <li><a href="news.html" class="nav-link">Travel News</a></li>
+                <li><a href="events.html" class="nav-link">Events</a></li>
+                <li><a href="more.html" class="nav-link">More</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <section style="padding-top: 120px; min-height: 100vh; padding-bottom: 4rem;">
+        <div class="container">
+            <div class="section-header">
+                <h1 class="section-title">Hotels & Dining</h1>
+                <p class="section-subtitle">Find hotels, discover restaurants, and explore local cuisine</p>
+            </div>
+
+            <!-- Search Form -->
+            <div class="card" style="max-width: 800px; margin: 0 auto 3rem;">
+                <form id="searchForm">
+                    <div class="grid grid-2">
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-map-marker-alt"></i> Destination</label>
+                            <input type="text" class="form-control" id="destination" placeholder="Paris" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-calendar"></i> Check-in Date</label>
+                            <input type="date" class="form-control" id="checkin">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-search"></i> Search Hotels & Restaurants
+                    </button>
+                </form>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="hotels">
+                    <i class="fas fa-hotel"></i> Hotels
+                </button>
+                <button class="tab-btn" data-tab="restaurants">
+                    <i class="fas fa-utensils"></i> Restaurants
+                </button>
+                <button class="tab-btn" data-tab="cuisine">
+                    <i class="fas fa-drumstick-bite"></i> Local Cuisine
+                </button>
+            </div>
+
+            <!-- Hotels Tab -->
+            <div id="hotels-tab" class="tab-content active">
+                <div id="hotelsResults"></div>
+            </div>
+
+            <!-- Restaurants Tab -->
+            <div id="restaurants-tab" class="tab-content">
+                <div id="restaurantsResults"></div>
+            </div>
+
+            <!-- Cuisine Tab -->
+            <div id="cuisine-tab" class="tab-content">
+                <div id="cuisineResults"></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>LuxeTravel</h4>
+                    <p style="color: var(--text-secondary); line-height: 1.8;">Your premium AI-powered travel companion.
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="flights.html">Flights</a></li>
+                        <li><a href="hotels.html">Hotels</a></li>
+                        <li><a href="itinerary.html">Itinerary</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="news.html">Travel News</a></li>
+                        <li><a href="events.html">Events</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> info@luxetravel.ai</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 LuxeTravel. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../assets/js/common.js"></script>
+    <script>
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabName = btn.dataset.tab;
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(`${tabName}-tab`).classList.add('active');
+            });
+        });
+
+        // Set default check-in date to today
+        document.getElementById('checkin').valueAsDate = new Date();
+
+        // Form submission
+        document.getElementById('searchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const destination = document.getElementById('destination').value;
+            await Promise.all([
+                loadHotels(destination),
+                loadRestaurants(destination),
+                loadCuisine(destination)
+            ]);
+            showToast('Hotels and dining information loaded!');
+        });
+
+        // Load Hotels
+        async function loadHotels(city) {
+            showLoading('hotelsResults');
+            try {
+                const response = await apiCall('/api/hotels/search', {
+                    city: city,
+                    checkin: document.getElementById('checkin').value,
+                    checkout: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                    guests: 2
+                });
+                if (response.success && response.hotels) {
+                    displayHotels(response.hotels);
+                    if (response.is_mock) {
+                        showToast('Showing demo data (API key not configured)');
+                    }
+                } else {
+                    showError('hotelsResults', 'No hotels found. Try popular cities like Paris, London, or Tokyo.');
+                }
+            } catch (error) {
+                showError('hotelsResults', 'Failed to load hotels');
+                console.error(error);
+            }
+        }
+
+        function displayHotels(hotels) {
+            if (!hotels || hotels.length === 0) {
+                document.getElementById('hotelsResults').innerHTML = `
+                    <div class="text-center" style="padding: 3rem;">
+                        <i class="fas fa-hotel" style="font-size: 4rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
+                        <h3 style="color: var(--text-secondary);">No hotels found</h3>
+                        <p style="color: var(--text-secondary);">Try searching for major cities like Paris, London, or Tokyo.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Store for other tabs
+            window.__lastHotels = hotels;
+
+            // Create grid layout for hotels
+            const html = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+                    ${hotels.map(hotel => {
+                const imageUrl = hotel.image_url || (hotel.preview && hotel.preview.source) || hotel.image || 'https://via.placeholder.com/400x300?text=Hotel';
+                const rating = hotel.rating || parseFloat(hotel.rate) || 4.0;
+                const offer = hotel.offer || '';
+                const description = hotel.description || 'A great hotel experience awaits you.';
+                const name = hotel.name || 'Hotel';
+                const address = hotel.address || 'Address not available';
+
+                // Create Google Maps link
+                const point = hotel.point;
+                const mapsLink = (point && point.lat && point.lon)
+                    ? `https://www.google.com/maps/search/?api=1&query=${point.lat},${point.lon}`
+                    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name)}`;
+
+                return `
+                            <div class="hotel-card" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; height: 100%;">
+                                <img src="${imageUrl}" 
+                                     alt="${name}" 
+                                     style="width: 100%; height: 180px; object-fit: cover; display: block;"
+                                     onerror="this.src='https://via.placeholder.com/400x300?text=Hotel'">
+                                <div style="padding: 1rem; flex: 1; display: flex; flex-direction: column;">
+                                    <h3 style="color: var(--gold); margin: 0 0 0.5rem 0; font-size: 1.1rem;">
+                                        <i class="fas fa-hotel"></i> ${name}
+                                    </h3>
+                                    <p style="color: var(--gold); margin: 0.25rem 0; font-size: 0.95rem;">
+                                        ⭐ ${rating.toFixed(1)} / 5.0
+                                    </p>
+                                    <p style="color: var(--text-secondary); margin: 0.5rem 0; font-size: 0.85rem; line-height: 1.4; flex: 1;">
+                                        ${description}
+                                    </p>
+                                    <p style="color: var(--text-secondary); margin: 0.5rem 0 0.25rem 0; font-size: 0.85rem;">
+                                        <i class="fas fa-map-marker-alt"></i> ${address}
+                                    </p>
+                                    ${offer ? `<p style="color: green; font-weight: bold; margin: 0.5rem 0;">${offer}</p>` : ''}
+                                    <a href="${mapsLink}" target="_blank" style="color: var(--gold); text-decoration: none; margin-top: 0.5rem; display: inline-block;">
+                                        📍 View on Maps
+                                    </a>
+                                </div>
+                            </div>
+                        `;
+            }).join('')}
+                </div>
+            `;
+            document.getElementById('hotelsResults').innerHTML = html;
+        }
+
+        // Load Restaurants
+        async function loadRestaurants(destination) {
+            showLoading('restaurantsResults');
+            try {
+                const response = await apiCall('/api/resources/cuisine', { destination });
+                if (response.success && response.cuisines) {
+                    displayRestaurants(response.cuisines);
+                } else {
+                    showError('restaurantsResults', 'No restaurants found');
+                }
+            } catch (error) {
+                showError('restaurantsResults', 'Failed to load restaurants');
+                console.error(error);
+            }
+        }
+
+        function displayRestaurants(restaurants) {
+            if (!restaurants || restaurants.length === 0) {
+                document.getElementById('restaurantsResults').innerHTML = `
+                    <div class="text-center" style="padding: 3rem;">
+                        <i class="fas fa-utensils" style="font-size: 4rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
+                        <h3 style="color: var(--text-secondary);">No restaurants found</h3>
+                    </div>
+                `;
+                return;
+            }
+            const html = restaurants.map(restaurant => `
+                <div class="restaurant-card">
+                    <div style="display:flex; gap:1rem; align-items:flex-start;">
+                        <img src="${(restaurant.preview && restaurant.preview.source) || restaurant.image || 'https://via.placeholder.com/240x180?text=Restaurant'}" 
+                             alt="${restaurant.name || 'Restaurant'}" 
+                             style="width:120px; height:90px; object-fit:cover; border-radius:8px;">
+                        <div style="flex:1;">
+                            <h3 style="color: var(--gold); margin-bottom: 0.5rem;">
+                                <i class="fas fa-utensils"></i> ${restaurant.name || 'Restaurant'}
+                            </h3>
+                            <p style="color: var(--text-secondary); line-height: 1.4; margin-bottom:0.5rem;">
+                                ${restaurant.description || 'A great dining experience awaits you.'}
+                            </p>
+                            <div style="color:var(--text-secondary); font-size:0.9rem;">${restaurant.address || ''}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('restaurantsResults').innerHTML = `<div class="restaurant-grid">${html}</div>`;
+        }
+
+        // Load Cuisine Information
+        async function loadCuisine(destination) {
+            showLoading('cuisineResults');
+            try {
+                const response = await apiCall('/api/food/culture', { destination });
+                if (response.success && response.data) {
+                    displayCuisine(response.data, destination);
+                } else {
+                    showError('cuisineResults', 'No cuisine information available');
+                }
+            } catch (error) {
+                showError('cuisineResults', 'Failed to load cuisine information');
+                console.error(error);
+            }
+        }
+
+        function displayCuisine(cuisineInfo, destination) {
+            const html = `
+                <div class="card">
+                    <h2 style="color: var(--gold); margin-bottom: 1.5rem;">
+                        <i class="fas fa-drumstick-bite"></i> Local Cuisine in ${destination}
+                    </h2>
+                    <div style="line-height: 1.8; color: var(--text-secondary); white-space: pre-wrap;">
+                        ${cuisineInfo}
+                    </div>
+                </div>
+            `;
+            document.getElementById('cuisineResults').innerHTML = html;
+        }
+
+        // Auto-load Paris on page load
+        window.addEventListener('load', () => {
+            document.getElementById('destination').value = 'Paris';
+            document.getElementById('searchForm').dispatchEvent(new Event('submit'));
+        });
+    </script>
+</body>
+
+</html>

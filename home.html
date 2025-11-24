@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HCATA - Premium AI Travel Planning</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="assets/css/theme.css">
+
+    <style>
+        /* Page-specific styles */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .service-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gold);
+            transform: scaleX(0);
+            transition: var(--transition);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: var(--shadow);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+        }
+
+        .service-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .service-desc {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .stats-section {
+            background: var(--rich-black);
+            padding: 4rem 0;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--gold);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-plane-departure"></i>
+                <span>HCATA-Premium Travel</span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link active">Home</a></li>
+                <li><a href="pages/flights.html" class="nav-link">Flights</a></li>
+                <li><a href="pages/hotels.html" class="nav-link">Hotels</a></li>
+                <li><a href="pages/itinerary.html" class="nav-link">Itinerary</a></li>
+                <li><a href="pages/destinations.html" class="nav-link">Destinations</a></li>
+                <li><a href="pages/news.html" class="nav-link">Travel News</a></li>
+                <li><a href="pages/more.html" class="nav-link">More</a></li>
+                <li><a href="#" id="loginBtn" class="nav-link" style="color: var(--gold);"><i
+                            class="fas fa-user-circle"></i> Login</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg"
+            style="background-image: url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1920');"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">Elevate Your Journey</h1>
+            <p class="hero-subtitle">Experience luxury travel planning powered by artificial intelligence. Discover
+                destinations, plan itineraries, and create unforgettable memories.</p>
+            <div class="hero-cta">
+                <a href="pages/flights.html" class="btn btn-primary">
+                    Start Planning <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="#services" class="btn btn-secondary">
+                    Explore Services
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Premium Services</h2>
+                <p class="section-subtitle">Comprehensive AI-powered travel solutions tailored to your needs</p>
+            </div>
+
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-plane"></i>
+                    </div>
+                    <h3 class="service-title">Flight Search</h3>
+                    <p class="service-desc">Find the best flight deals with real-time pricing and multiple booking
+                        options from top providers.</p>
+                    <a href="pages/flights.html" class="btn btn-secondary">Explore</a>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-hotel"></i>
+                    </div>
+                    <h3 class="service-title">Luxury Hotels</h3>
+                    <p class="service-desc">Discover premium accommodations curated to match your preferences and
+                        budget.</p>
+                    <a href="pages/hotels.html" class="btn btn-secondary">Explore</a>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-route"></i>
+                    </div>
+                    <h3 class="service-title">AI Itinerary</h3>
+                    <p class="service-desc">Generate personalized day-by-day travel plans with AI-powered
+                        recommendations.</p>
+                    <a href="pages/itinerary.html" class="btn btn-secondary">Explore</a>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <h3 class="service-title">Destinations</h3>
+                    <p class="service-desc">Explore travel videos, shopping places, and packing lists for
+                        your destination.</p>
+                    <a href="pages/destinations.html" class="btn btn-secondary">Explore</a>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-newspaper"></i>
+                    </div>
+                    <h3 class="service-title">Travel News</h3>
+                    <p class="service-desc">Stay updated with the latest travel news, tips, and destination insights.
+                    </p>
+                    <a href="pages/news.html" class="btn btn-secondary">Explore</a>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3 class="service-title">Events & Festivals</h3>
+                    <p class="service-desc">Discover upcoming events, festivals, and cultural celebrations worldwide.
+                    </p>
+                    <a href="pages/events.html" class="btn btn-secondary">Explore</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">50K+</div>
+                    <div class="stat-label">Happy Travelers</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">200+</div>
+                    <div class="stat-label">Destinations</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">Itineraries Created</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">AI Support</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>HCATA-Premium Travel</h4>
+                    <p style="color: var(--text-secondary); line-height: 1.8;">
+                        Your premium AI-powered travel companion for unforgettable journeys around the world.
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="pages/flights.html">Flight Search</a></li>
+                        <li><a href="pages/hotels.html">Hotels</a></li>
+                        <li><a href="pages/itinerary.html">Itinerary Planner</a></li>
+                        <li><a href="pages/more.html">More</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="pages/news.html">Travel News</a></li>
+                        <li><a href="pages/destinations.html">Destinations</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> ns451507@gmail.com</li>
+                        <li><i class="fas fa-envelope"></i> vvinaybadnoriya@gmail.com</li>
+                        <li><i class="fas fa-phone"></i> +91 1234567890</li>
+                        <li><i class="fas fa-map-marker-alt"></i> New Delhi, India</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 HCATA-Premium Travel. All rights reserved. | Powered by AI</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="assets/js/common.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/chatbot.js"></script>
+</body>
+
+</html>

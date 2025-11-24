@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Travel Agent - Frontend Example</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            margin-top: 10px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .status.online {
+            border-left: 4px solid #4caf50;
+        }
+
+        .status.offline {
+            border-left: 4px solid #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="status" id="status">
+        <span id="statusText">Checking...</span>
+    </div>
+
+    <div class="container">
+        <h1>🌍 AI Travel Agent</h1>
+
+        <div class="grid">
+            <!-- Chat Agent -->
+            <div class="card">
+                <h2>💬 Chat with AI</h2>
+                <div class="input-group">
+                    <label>Your Message:</label>
+                    <textarea id="chatMessage" rows="3" placeholder="Ask about travel destinations..."></textarea>
+                </div>
+                <button onclick="testChat()">Send Message</button>
+                <div class="loading" id="chatLoading">Loading...</div>
+                <div class="result" id="chatResult"></div>
+            </div>
+
+            <!-- Weather -->
+            <div class="card">
+                <h2>🌤️ Weather</h2>
+                <div class="input-group">
+                    <label>City:</label>
+                    <input type="text" id="weatherCity" placeholder="e.g., Paris" value="Paris">
+                </div>
+                <button onclick="testWeather()">Get Weather</button>
+                <div class="loading" id="weatherLoading">Loading...</div>
+                <div class="result" id="weatherResult"></div>
+            </div>
+
+            <!-- Flight Search -->
+            <div class="card">
+                <h2>✈️ Search Flights</h2>
+                <div class="input-group">
+                    <label>From:</label>
+                    <input type="text" id="flightFrom" placeholder="e.g., New York" value="New York">
+                </div>
+                <div class="input-group">
+                    <label>To:</label>
+                    <input type="text" id="flightTo" placeholder="e.g., Paris" value="Paris">
+                </div>
+                <div class="input-group">
+                    <label>Date:</label>
+                    <input type="date" id="flightDate">
+                </div>
+                <button onclick="testFlights()">Search Flights</button>
+                <div class="loading" id="flightLoading">Loading...</div>
+                <div class="result" id="flightResult"></div>
+            </div>
+
+            <!-- Budget Estimator -->
+            <div class="card">
+                <h2>💰 Budget Estimator</h2>
+                <div class="input-group">
+                    <label>Destination:</label>
+                    <input type="text" id="budgetDest" placeholder="e.g., Paris" value="Paris">
+                </div>
+                <div class="input-group">
+                    <label>Days:</label>
+                    <input type="number" id="budgetDays" value="7">
+                </div>
+                <div class="input-group">
+                    <label>Budget Level:</label>
+                    <select id="budgetLevel">
+                        <option value="Budget">Budget</option>
+                        <option value="Moderate" selected>Moderate</option>
+                        <option value="Luxury">Luxury</option>
+                    </select>
+                </div>
+                <button onclick="testBudget()">Estimate Budget</button>
+                <div class="loading" id="budgetLoading">Loading...</div>
+                <div class="result" id="budgetResult"></div>
+            </div>
+
+            <!-- Activities -->
+            <div class="card">
+                <h2>🎯 Activities</h2>
+                <div class="input-group">
+                    <label>Destination:</label>
+                    <input type="text" id="activityDest" placeholder="e.g., Paris" value="Paris">
+                </div>
+                <button onclick="testActivities()">Get Activities</button>
+                <div class="loading" id="activityLoading">Loading...</div>
+                <div class="result" id="activityResult"></div>
+            </div>
+
+            <!-- Currency Converter -->
+            <div class="card">
+                <h2>💱 Currency Converter</h2>
+                <div class="input-group">
+                    <label>Amount:</label>
+                    <input type="number" id="currencyAmount" value="100">
+                </div>
+                <div class="input-group">
+                    <label>From:</label>
+                    <select id="currencyFrom">
+                        <option value="USD" selected>USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="GBP">GBP</option>
+                        <option value="JPY">JPY</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>To:</label>
+                    <select id="currencyTo">
+                        <option value="USD">USD</option>
+                        <option value="EUR" selected>EUR</option>
+                        <option value="GBP">GBP</option>
+                        <option value="JPY">JPY</option>
+                    </select>
+                </div>
+                <button onclick="testCurrency()">Convert</button>
+                <div class="loading" id="currencyLoading">Loading...</div>
+                <div class="result" id="currencyResult"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000';
+
+        // Check API status
+        async function checkStatus() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`);
+                const data = await response.json();
+                document.getElementById('status').className = 'status online';
+                document.getElementById('statusText').textContent = '🟢 API Online';
+            } catch (error) {
+                document.getElementById('status').className = 'status offline';
+                document.getElementById('statusText').textContent = '🔴 API Offline';
+            }
+        }
+
+        // Helper function to show result
+        function showResult(elementId, data) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            element.classList.add('show');
+        }
+
+        // Helper function to show/hide loading
+        function toggleLoading(elementId, show) {
+            const element = document.getElementById(elementId);
+            if (show) {
+                element.classList.add('show');
+            } else {
+                element.classList.remove('show');
+            }
+        }
+
+        // Test Chat
+        async function testChat() {
+            const message = document.getElementById('chatMessage').value;
+            toggleLoading('chatLoading', true);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message, history: [] })
+                });
+                const data = await response.json();
+                showResult('chatResult', data);
+            } catch (error) {
+                showResult('chatResult', { error: error.message });
+            }
+            
+            toggleLoading('chatLoading', false);
+        }
+
+        // Test Weather
+        async function testWeather() {
+            const city = document.getElementById('weatherCity').value;
+            toggleLoading('weatherLoading', true);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/weather`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ city })
+                });
+                const data = await response.json();
+                showResult('weatherResult', data);
+            } catch (error) {
+                showResult('weatherResult', { error: error.message });
+            }
+            
+            toggleLoading('weatherLoading', false);
+        }
+
+        // Test Flights
+        async function testFlights() {
+            const from_city = document.getElementById('flightFrom').value;
+            const to_city = document.getElementById('flightTo').value;
+            const date = document.getElementById('flightDate').value;
+            toggleLoading('flightLoading', true);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/flights/search`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ from_city, to_city, date, passengers: 1 })
+                });
+                const data = await response.json();
+                showResult('flightResult', data);
+            } catch (error) {
+                showResult('flightResult', { error: error.message });
+            }
+            
+            toggleLoading('flightLoading', false);
+        }
+
+        // Test Budget
+        async function testBudget() {
+            const destination = document.getElementById('budgetDest').value;
+            const days = parseInt(document.getElementById('budgetDays').value);
+            const budget_level = document.getElementById('budgetLevel').value;
+            toggleLoading('budgetLoading', true);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/budget/estimate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ destination, days, budget_level })
+                });
+                const data = await response.json();
+                showResult('budgetResult', data);
+            } catch (error) {
+                showResult('budgetResult', { error: error.message });
+            }
+            
+            toggleLoading('budgetLoading', false);
+        }
+
+        // Test Activities
+        async function testActivities() {
+            const destination = document.getElementById('activityDest').value;
+            toggleLoading('activityLoading', true);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/activities/recommend`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ destination, interests: [] })
+                });
+                const data = await response.json();
+                showResult('activityResult', data);
+            } catch (error) {
+                showResult('activityResult', { error: error.message });
+            }
+            
+            toggleLoading('activityLoading', false);
+        }
+
+        // Test Currency
+        async function testCurrency() {
+            const amount = parseFloat(document.getElementById('currencyAmount').value);
+            const from_currency = document.getElementById('currencyFrom').value;
+            const to_currency = document.getElementById('currencyTo').value;
+            toggleLoading('currencyLoading', true);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/currency/convert`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount, from_currency, to_currency })
+                });
+                const data = await response.json();
+                showResult('currencyResult', data);
+            } catch (error) {
+                showResult('currencyResult', { error: error.message });
+            }
+            
+            toggleLoading('currencyLoading', false);
+        }
+
+        // Set default date to tomorrow
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        document.getElementById('flightDate').value = tomorrow.toISOString().split('T')[0];
+
+        // Check status on load and every 30 seconds
+        checkStatus();
+        setInterval(checkStatus, 30000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Search - HCATA-Premium Travel</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/theme.css">
+
+    <style>
+        .flight-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .flight-card:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateX(5px);
+        }
+
+        .flight-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .flight-airline {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .flight-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gold);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .flight-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .flight-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .flight-detail i {
+            color: var(--gold);
+            font-size: 1.25rem;
+        }
+
+        .booking-links {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .booking-links h4 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .link-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-plane-departure"></i>
+                <span>LuxeTravel</span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../home.html" class="nav-link">Home</a></li>
+                <li><a href="flights.html" class="nav-link active">Flights</a></li>
+                <li><a href="hotels.html" class="nav-link">Hotels</a></li>
+                <li><a href="itinerary.html" class="nav-link">Itinerary</a></li>
+                <li><a href="destinations.html" class="nav-link">Destinations</a></li>
+                <li><a href="news.html" class="nav-link">Travel News</a></li>
+                <li><a href="more.html" class="nav-link">More</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <section style="padding-top: 120px; min-height: 100vh; padding-bottom: 4rem;">
+        <div class="container">
+            <div class="section-header">
+                <h1 class="section-title">Search Flights</h1>
+                <p class="section-subtitle">Find the best flight deals with real-time pricing</p>
+            </div>
+
+            <!-- Search Form -->
+            <div class="card" style="max-width: 900px; margin: 0 auto 3rem;">
+                <form id="flightForm">
+                    <div class="grid grid-2">
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-plane-departure"></i> From</label>
+                            <input type="text" class="form-control" id="fromCity" placeholder="New York" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-plane-arrival"></i> To</label>
+                            <input type="text" class="form-control" id="toCity" placeholder="Paris" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-calendar"></i> Date</label>
+                            <input type="date" class="form-control" id="flightDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-users"></i> Passengers</label>
+                            <input type="number" class="form-control" id="passengers" value="1" min="1" max="9">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-search"></i> Search Flights
+                    </button>
+                </form>
+            </div>
+
+            <!-- Results -->
+            <div id="results"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>HCATA-Premium Travel</h4>
+                    <p style="color: var(--text-secondary); line-height: 1.8;">
+                        Your premium AI-powered travel companion for unforgettable journeys.
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="flights.html">Flights</a></li>
+                        <li><a href="hotels.html">Hotels</a></li>
+                        <li><a href="itinerary.html">Itinerary</a></li>
+                        <li><a href="packages.html">Packages</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="news.html">Travel News</a></li>
+                        
+                        <li><a href="food-culture.html">Food & Culture</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> ns451507@gmail.com</li>
+                        <li><i class="fas fa-phone"></i> +91 1234567890</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 HCATA-Premium Travel. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../assets/js/common.js"></script>
+    <script>
+        // Set default date to tomorrow
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        document.getElementById('flightDate').value = tomorrow.toISOString().split('T')[0];
+
+        // Form submission
+        document.getElementById('flightForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const data = {
+                from_city: document.getElementById('fromCity').value,
+                to_city: document.getElementById('toCity').value,
+                date: document.getElementById('flightDate').value,
+                passengers: parseInt(document.getElementById('passengers').value)
+            };
+
+            showLoading('results');
+
+            try {
+                // Search flights
+                const flightResponse = await apiCall('/api/flights/search', data);
+
+                // Get booking links
+                const linksResponse = await apiCall('/api/flights/links', data);
+
+                if (flightResponse.success) {
+                    displayFlights(flightResponse.flights, flightResponse.is_mock, linksResponse.links);
+                    showToast('Flights loaded successfully!');
+                }
+            } catch (error) {
+                showError('results', 'Failed to search flights. Please try again.');
+                console.error(error);
+            }
+        });
+
+        function displayFlights(flights, isMock, links) {
+            if (!flights || flights.length === 0) {
+                document.getElementById('results').innerHTML = `
+                    <div class="text-center" style="padding: 3rem;">
+                        <i class="fas fa-plane-slash" style="font-size: 4rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
+                        <p style="color: var(--text-secondary);">No flights found. Try different cities or dates.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+
+            if (isMock) {
+                html += `
+                    <div style="background: rgba(212, 175, 55, 0.1); border: 1px solid var(--gold); padding: 1rem; margin-bottom: 2rem; text-align: center;">
+                        <i class="fas fa-info-circle" style="color: var(--gold);"></i>
+                        <span style="color: var(--text-secondary); margin-left: 0.5rem;">Showing demo data (API unavailable)</span>
+                    </div>
+                `;
+            }
+
+            flights.forEach(flight => {
+                html += `
+                    <div class="flight-card">
+                        <div class="flight-header">
+                            <div>
+                                <div class="flight-airline">${flight.airline}</div>
+                                <div style="color: var(--gold); font-size: 0.9rem; margin-top: 0.25rem;">
+                                    <i class="fas fa-star"></i> ${flight.type}
+                                </div>
+                            </div>
+                            <div class="flight-price">${formatCurrency(flight.price)}</div>
+                        </div>
+                        <div class="flight-details">
+                            <div class="flight-detail">
+                                <i class="fas fa-clock"></i>
+                                <span>${flight.duration} minutes</span>
+                            </div>
+                            <div class="flight-detail">
+                                <i class="fas fa-plane-departure"></i>
+                                <span>${flight.departure}</span>
+                            </div>
+                            <div class="flight-detail">
+                                <i class="fas fa-plane-arrival"></i>
+                                <span>${flight.arrival}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Add booking links
+            if (links && links.success) {
+                html += `
+                    <div class="booking-links">
+                        <h4><i class="fas fa-external-link-alt"></i> Book on:</h4>
+                        <div class="link-buttons">
+                            <a href="${links.links.google_flights}" target="_blank" class="btn btn-secondary">
+                                <i class="fas fa-plane"></i> Google Flights
+                            </a>
+                            <a href="${links.links.skyscanner}" target="_blank" class="btn btn-secondary">
+                                <i class="fas fa-plane"></i> Skyscanner
+                            </a>
+                            <a href="${links.links.kayak}" target="_blank" class="btn btn-secondary">
+                                <i class="fas fa-plane"></i> Kayak
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('results').innerHTML = html;
+        }
+    </script>
+</body>
+
+</html>
