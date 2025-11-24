@@ -1,8 +1,4 @@
-<<<<<<< HEAD
---requirement files combined for deployment
--r requirements_v2.txt
--r requirements_auth.txt
-=======
+
 # ------------------------
 # CORE APP + SERVER
 # ------------------------
