@@ -1,5 +1,8 @@
 // ==================== Configuration ====================
-const API_BASE_URL = 'http://localhost:8000';
+// Prefer a runtime-injected `window.API_BASE_URL` (set by index.html or hosting platform)
+const API_BASE_URL = (typeof window !== 'undefined' && window.API_BASE_URL)
+    ? window.API_BASE_URL
+    : 'http://localhost:8000';
 
 // ==================== DOM Elements ====================
 const navbar = document.getElementById('navbar');

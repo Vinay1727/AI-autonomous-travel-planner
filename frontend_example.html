@@ -270,7 +270,7 @@
     </div>
 
     <script>
-        const API_BASE_URL = 'http://localhost:8000';
+        const API_BASE_URL = (window && window.API_BASE_URL) ? window.API_BASE_URL : 'https://ai-autonomous-travel-planner-4.onrender.com';
 
         // Check API status
         async function checkStatus() {

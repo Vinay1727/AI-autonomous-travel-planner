@@ -96,6 +96,35 @@ const modalHTML = `
           <p>Already have an account? <a href="#" id="showLogin">Sign in</a></p>
         </div>
       </div>
+
+      <!-- OTP Confirmation Form -->
+      <div id="otpForm" class="auth-form">
+        <div class="auth-header">
+          <div class="auth-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h2>Confirm Your Account</h2>
+          <p>Enter the one-time code sent to your email</p>
+        </div>
+
+        <form id="otpFormElement" class="auth-inputs">
+          <div class="input-group">
+            <i class="fas fa-key input-icon"></i>
+            <input type="text" id="otpInput" required placeholder="Enter OTP">
+          </div>
+
+          <button type="submit" class="auth-btn">
+            <span>Verify OTP</span>
+            <i class="fas fa-check"></i>
+          </button>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.75rem;">
+            <a href="#" id="resendOtp">Resend code</a>
+            <a href="#" id="backToSignup">Back</a>
+          </div>
+        </form>
+
+      </div>
     </div>
   </div>
 </div>
@@ -376,6 +405,9 @@ const modalHTML = `
 // Add modal to page
 document.body.insertAdjacentHTML('beforeend', modalHTML);
 
+// Use the same API base URL as `app.js` if available
+const BASE_API = (typeof API_BASE_URL !== 'undefined') ? API_BASE_URL : 'http://localhost:8000';
+
 // Get elements
 const modal = document.getElementById('auth-modal');
 const closeBtn = document.getElementById('auth-close');
@@ -384,7 +416,11 @@ const showSignup = document.getElementById('showSignup');
 const showLogin = document.getElementById('showLogin');
 const loginFormElement = document.getElementById('loginFormElement');
 const signupFormElement = document.getElementById('signupFormElement');
+const otpFormElement = document.getElementById('otpFormElement');
 const overlay = document.querySelector('.auth-modal-overlay');
+
+// Temp holder for pending signup details when OTP flow is used
+let pendingSignup = null;
 
 // Show modal
 function openModal() {
@@ -423,14 +459,24 @@ showLogin.addEventListener('click', function (e) {
   document.getElementById('loginForm').classList.add('active');
 });
 
+// Back link from OTP to Signup
+const backToSignup = document.getElementById('backToSignup');
+if (backToSignup) {
+  backToSignup.addEventListener('click', function (e) {
+    e.preventDefault();
+    document.getElementById('otpForm').classList.remove('active');
+    document.getElementById('signupForm').classList.add('active');
+  });
+}
+
 // Handle login
 loginFormElement.addEventListener('submit', async function (e) {
   e.preventDefault();
   const email = document.getElementById('loginEmail').value;
   const password = document.getElementById('loginPassword').value;
 
-  try {
-    const response = await fetch('http://localhost:8000/api/auth/login', {
+    try {
+    const response = await fetch(`${BASE_API}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
@@ -438,11 +484,12 @@ loginFormElement.addEventListener('submit', async function (e) {
 
     const data = await response.json();
 
-    if (data.success) {
+    if (data.success && data.user) {
       localStorage.setItem('luxetravel_user', JSON.stringify(data.user));
       closeModal();
       updateNavbar(data.user);
-      showToast(`Welcome back, ${data.user.name}!`);
+      const userName = data.user.name || 'Traveler';
+      showToast(`Welcome back, ${userName}!`);
     } else {
       showToast(data.message || 'Login failed', 'error');
     }
@@ -465,8 +512,8 @@ signupFormElement.addEventListener('submit', async function (e) {
     return;
   }
 
-  try {
-    const response = await fetch('http://localhost:8000/api/auth/signup', {
+    try {
+    const response = await fetch(`${BASE_API}/api/auth/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password })
@@ -474,11 +521,23 @@ signupFormElement.addEventListener('submit', async function (e) {
 
     const data = await response.json();
 
-    if (data.success) {
+    // If backend returns user immediately, finish signup
+    if (data.success && data.user) {
       localStorage.setItem('luxetravel_user', JSON.stringify(data.user));
       closeModal();
       updateNavbar(data.user);
-      showToast(`Welcome to LuxeTravel, ${data.user.name}!`);
+      const userName = data.user.name || 'Traveler';
+      showToast(`Welcome to HCATA-Premium Travel, ${userName}!`);
+      pendingSignup = null;
+
+    // If backend uses OTP flow, show OTP form to the user
+    } else if (data.success && (data.otpSent || data.requiresVerification || !data.user)) {
+      // keep the signup data locally while waiting for OTP confirmation
+      pendingSignup = { name, email, password };
+      document.getElementById('signupForm').classList.remove('active');
+      document.getElementById('otpForm').classList.add('active');
+      showToast(data.message || 'OTP sent to your email. Please check and enter the code.');
+
     } else {
       showToast(data.message || 'Signup failed', 'error');
     }
@@ -487,6 +546,74 @@ signupFormElement.addEventListener('submit', async function (e) {
     showToast('Signup failed. Please try again.', 'error');
   }
 });
+
+// Handle OTP verification
+if (otpFormElement) {
+  otpFormElement.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const otp = document.getElementById('otpInput').value;
+
+    if (!pendingSignup || !pendingSignup.email) {
+      showToast('No pending signup to verify. Please start signup again.', 'error');
+      document.getElementById('otpForm').classList.remove('active');
+      document.getElementById('signupForm').classList.add('active');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${BASE_API}/api/auth/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: pendingSignup.email, otp })
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.user) {
+        localStorage.setItem('luxetravel_user', JSON.stringify(data.user));
+        closeModal();
+        updateNavbar(data.user);
+        const userName = data.user.name || pendingSignup.name || 'Traveler';
+        showToast(`Welcome to HCATA- Premium Travel, ${userName}!`);
+        pendingSignup = null;
+      } else {
+        showToast(data.message || 'OTP verification failed', 'error');
+      }
+    } catch (error) {
+      console.error('OTP verification error:', error);
+      showToast('OTP verification failed. Please try again.', 'error');
+    }
+  });
+
+  // Resend OTP
+  const resendOtp = document.getElementById('resendOtp');
+  if (resendOtp) {
+    resendOtp.addEventListener('click', async function (e) {
+      e.preventDefault();
+      if (!pendingSignup || !pendingSignup.email) {
+        showToast('No email to resend OTP to. Please signup first.', 'error');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${BASE_API}/api/auth/resend-otp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: pendingSignup.email })
+        });
+        const data = await response.json();
+        if (data.success) {
+          showToast(data.message || 'OTP resent. Check your email.');
+        } else {
+          showToast(data.message || 'Failed to resend OTP', 'error');
+        }
+      } catch (error) {
+        console.error('Resend OTP error:', error);
+        showToast('Failed to resend OTP. Please try again.', 'error');
+      }
+    });
+  }
+}
 
 // Update navbar after login
 function updateNavbar(user) {
