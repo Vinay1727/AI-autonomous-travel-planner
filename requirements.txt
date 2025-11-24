@@ -1,3 +1,94 @@
+<<<<<<< HEAD
 --requirement files combined for deployment
 -r requirements_v2.txt
 -r requirements_auth.txt
+=======
+# ------------------------
+# CORE APP + SERVER
+# ------------------------
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+python-dotenv==1.0.1
+starlette==0.37.2
+
+# ------------------------
+# DATA / MODELS / UTILS
+# ------------------------
+pydantic==2.8.2
+pydantic-core==2.20.1
+pydantic-settings==2.3.4
+numpy==1.26.4
+pandas==2.2.3
+python-dateutil==2.9.0.post0
+
+requests==2.32.3
+httpx==0.27.0
+python-multipart==0.0.9
+
+# ------------------------
+# DATABASE
+# ------------------------
+pymongo==4.6.3
+
+# ------------------------
+# AUTH + SECURITY
+# ------------------------
+bcrypt==4.1.2
+python-jose[cryptography]==3.3.0
+passlib==1.7.4
+
+# ------------------------
+# AI + LLM + LANGCHAIN
+# ------------------------
+langchain==0.2.16
+langchain-core==0.2.39
+langchain-community==0.2.12
+langchain-groq==0.1.5
+langchain-google-genai==1.0.5
+langgraph==0.2.3
+
+# GROQ SDK
+groq==0.4.2
+
+# GOOGLE GEMINI
+google-generativeai==0.5.2
+
+
+# ------------------------
+# OPTIONAL / SUPPORT
+# ------------------------
+aiohttp==3.9.5
+aiosignal==1.3.1
+attrs==25.1.0
+certifi==2024.8.30
+charset-normalizer==3.4.0
+click==8.1.7
+colorama==0.4.6
+dataclasses-json==0.6.7
+frozenlist==1.4.1
+greenlet==3.1.0
+idna==3.10
+jinja2==3.1.4
+joblib==1.4.2
+markupsafe==2.1.5
+marshmallow==3.22.0
+multidict==6.1.0
+mypy-extensions==1.0.0
+packaging==24.1
+pytz==2024.2
+pyyaml==6.0.2
+regex==2024.9.11
+scikit-learn==1.5.2
+scipy==1.14.1
+six==1.16.0
+sqlalchemy==2.0.35
+tenacity==8.5.0
+threadpoolctl==3.5.0
+tqdm==4.66.5
+typing-inspect==0.9.0
+typing_extensions==4.12.2
+urllib3==2.2.3
+yarl==1.12.1
+
+feedparser==6.0.10
+>>>>>>> 70e119022eeff558f4fe1a47e7bc48637cbf022a
