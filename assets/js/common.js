@@ -1,5 +1,8 @@
 // Common JavaScript utilities for all pages
-const API_BASE_URL = 'http://localhost:8000';
+// Prefer runtime-injected API base (set in HTML by hosting or index/home pages)
+const API_BASE_URL = (typeof window !== 'undefined' && window.API_BASE_URL)
+    ? window.API_BASE_URL
+    : 'https://ai-autonomous-travel-planner-4.onrender.com';
 
 // Utility Functions
 function showLoading(elementId) {
