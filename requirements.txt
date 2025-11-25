@@ -86,5 +86,6 @@ typing_extensions==4.12.2
 urllib3==2.2.3
 yarl==1.12.1
 
-feedparser==6.0.10
+feedparser>=6.0.11
+
 
