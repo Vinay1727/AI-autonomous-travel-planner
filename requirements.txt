@@ -79,8 +79,8 @@ typing_extensions==4.12.2
 urllib3==2.2.3
 yarl==1.12.1
 
-# FIXED FEEDPARSER (Python 3.10+ only)
+# FIXED FEEDPARSER
 feedparser>=6.0.11
 
-# FIX: geopy required for ShoppingPlacesFinder
+# FIXED GEO LOCATION
 geopy==2.4.1
