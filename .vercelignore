@@ -1,0 +1,27 @@
+# ignore Python backend and env
+*.py
+main.py
+Procfile
+runtime.txt
+requirements.txt
+requirements_v2.txt
+requirements_auth.txt
+trip_venv/
+venv/
+.env
+test_api.py
+
+# ignore backend folders / heavy code
+agents/
+database/
+utils/
+pycache/
+__pycache__/
+*.pyc
+
+# ignore local configs, backups
+*.backup
+*.log
+.DS_Store
+.idea/
+.vscode/
