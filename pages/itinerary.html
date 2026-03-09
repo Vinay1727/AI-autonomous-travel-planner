@@ -47,27 +47,34 @@
         }
 
         .interest-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                margin-top: 0.5rem;
+            }
 
-        .interest-tag {
-            padding: 0.5rem 1rem;
-            background: var(--medium-dark);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
+            .interest-tag {
+                padding: 0.5rem 1rem;
+                background: #ffffff;
+                border: 1px solid #cccccc;
+                color: #000000;
+                font-size: 0.9rem;
+                cursor: pointer;
+                transition: var(--transition);
+                border-radius: 20px;
+            }
 
-        .interest-tag.selected {
-            background: var(--gold);
-            color: var(--pure-black);
-            border-color: var(--gold);
-        }
+            .interest-tag:hover {
+                background: #00AEEF;
+                color: #ffffff;
+                border-color: #00AEEF;
+            }
+
+            .interest-tag.selected {
+                background: var(--gold);
+                color: #000000;
+                border-color: var(--gold);
+            }
     </style>
 </head>
 

@@ -1,5 +1,4 @@
 /* ==================== Premium Black/White Theme ==================== */
-
 :root {
     /* Black Shades */
     --pure-black: #000000;
@@ -7,7 +6,7 @@
     --dark-gray: #1a1a1a;
     --medium-dark: #2a2a2a;
     --medium-gray: #404040;
-    --light-gray: #808080;
+    --light-gray: #F5F5F5;
 
     /* White Shades */
     --pure-white: #ffffff;
@@ -16,20 +15,20 @@
     --medium-white: #d5d5d5;
 
     /* Accent Colors */
-    --gold: #d4af37;
-    --silver: #c0c0c0;
-    --gold-dark: #b8941f;
+    --gold: #FFD700;
+    --silver: #F5F5F5;
+    --gold-dark: #e6c200;
 
-    /* Semantic Colors */
-    --bg-primary: var(--pure-black);
-    --bg-secondary: var(--rich-black);
-    --bg-card: var(--dark-gray);
-    --text-primary: var(--pure-white);
-    --text-secondary: var(--off-white);
-    --text-muted: var(--light-gray);
-    --border-color: rgba(255, 255, 255, 0.1);
-    --shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
-    --shadow-light: 0 4px 20px rgba(0, 0, 0, 0.5);
+    /* Semantic Colors (UPDATED FOR WHITE THEME) */
+    --bg-primary: var(--pure-white);
+    --bg-secondary: var(--off-white);
+    --bg-card: var(--pure-white);
+    --text-primary: var(--pure-black);
+    --text-secondary: #333333;
+    --text-muted: #666666;
+    --border-color: rgba(0, 0, 0, 0.1);
+    --shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    --shadow-light: 0 4px 20px rgba(0, 0, 0, 0.08);
 
     /* Transitions */
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -113,12 +112,13 @@ a:hover {
     right: 0;
     z-index: 1000;
     padding: 1.5rem 0;
-    background: transparent;
+    background: #ffffff;
     transition: var(--transition);
+    border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 
 .navbar.scrolled {
-    background: rgba(0, 0, 0, 0.95);
+    background: #f6f2f2e9;
     backdrop-filter: blur(10px);
     padding: 1rem 0;
     border-bottom: 1px solid var(--border-color);
@@ -145,7 +145,7 @@ a:hover {
 }
 
 .nav-logo i {
-    color: var(--gold);
+    color: #00AEEF;
     font-size: 2rem;
 }
 
@@ -216,9 +216,9 @@ a:hover {
 }
 
 .btn-primary {
-    background: var(--gold);
+    background: #00AEEF;
     color: var(--pure-black);
-    border: 2px solid var(--gold);
+    border: 2px solid #00AEEF;
 }
 
 .btn-primary::before {
@@ -228,7 +228,7 @@ a:hover {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: var(--gold-dark);
+    background: #FFD700;
     transition: var(--transition);
     z-index: -1;
 }
@@ -432,11 +432,12 @@ section {
 .hero-title {
     margin-bottom: 1.5rem;
     animation: fadeInUp 1s ease-out;
+    color: #ffffff;
 }
 
 .hero-subtitle {
     font-size: clamp(1.125rem, 2vw, 1.5rem);
-    color: var(--text-secondary);
+    color: #ffffff;
     margin-bottom: 2.5rem;
     animation: fadeInUp 1s ease-out 0.2s both;
 }
@@ -447,8 +448,8 @@ section {
 
 /* ==================== Footer ==================== */
 .footer {
-    background: var(--rich-black);
-    border-top: 1px solid var(--border-color);
+    background: #ffffff;
+    border-top: 1px solid rgba(0,0,0,0.1);
     padding: 4rem 0 2rem;
 }
 

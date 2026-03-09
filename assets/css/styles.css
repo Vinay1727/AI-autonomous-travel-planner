@@ -1,15 +1,15 @@
 /* ==================== CSS Variables ==================== */
 :root {
-    --primary-color: #667eea;
-    --secondary-color: #764ba2;
-    --accent-color: #f093fb;
-    --dark-bg: #0f0c29;
-    --dark-purple: #1a1a2e;
-    --text-light: #ffffff;
-    --text-dark: #333333;
-    --glass-bg: rgba(255, 255, 255, 0.1);
-    --glass-border: rgba(255, 255, 255, 0.2);
-    --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    --primary-color: #00AEEF;
+    --secondary-color: #FFD700;
+    --accent-color: #F5F5F5;
+    --dark-bg: #000000;
+    --dark-purple: #0a0a0a;
+    --text-light: #FFFFFF;
+    --text-dark: #000000;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -26,7 +26,7 @@ html {
 
 body {
     font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
     color: var(--text-light);
     line-height: 1.6;
     overflow-x: hidden;
@@ -60,7 +60,7 @@ body {
 }
 
 .navbar.scrolled {
-    background: rgba(15, 12, 41, 0.95);
+    background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(10px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
@@ -154,7 +154,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.7) 0%, rgba(118, 75, 162, 0.7) 100%);
+    background: linear-gradient(135deg, rgba(0, 174, 239, 0.7) 0%, rgba(0, 0, 0, 0.7) 100%);
 }
 
 .hero-content {
@@ -206,13 +206,13 @@ body {
 
 .btn-primary {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: var(--text-light);
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    color: #000000;
+    box-shadow: 0 4px 15px rgba(0, 174, 239, 0.4);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    box-shadow: 0 6px 20px rgba(0, 174, 239, 0.6);
 }
 
 .btn-secondary {
@@ -261,7 +261,7 @@ section {
 
 /* ==================== Features Section ==================== */
 .features {
-    background: linear-gradient(180deg, transparent 0%, rgba(15, 12, 41, 0.5) 100%);
+    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.5) 100%);
 }
 
 .features-grid {
@@ -309,7 +309,7 @@ section {
 
 /* ==================== Search Hub ==================== */
 .search-hub {
-    background: rgba(15, 12, 41, 0.3);
+    background: rgba(0, 0, 0, 0.3);
 }
 
 .tabs {
@@ -342,7 +342,8 @@ section {
 .tab-btn.active {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     border-color: transparent;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    color: #000000;
+    box-shadow: 0 4px 15px rgba(0, 174, 239, 0.4);
 }
 
 .tab-content-container {
@@ -583,7 +584,7 @@ section {
 
 /* ==================== Footer ==================== */
 .footer {
-    background: rgba(15, 12, 41, 0.8);
+    background: rgba(0, 0, 0, 0.8);
     padding: 3rem 0 1rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -657,7 +658,7 @@ section {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(15, 12, 41, 0.9);
+    background: rgba(0, 0, 0, 0.9);
     display: none;
     align-items: center;
     justify-content: center;
