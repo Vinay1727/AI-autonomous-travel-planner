@@ -324,11 +324,12 @@ a:hover {
 .form-select:focus {
     outline: none;
     border-color: var(--gold);
-    background: var(--medium-dark);
+    background: #ffffff;
+    color: #000000;
 }
 
 .form-control::placeholder {
-    color: var(--text-muted);
+    color: #666666;
 }
 
 /* ==================== Grid System ==================== */
