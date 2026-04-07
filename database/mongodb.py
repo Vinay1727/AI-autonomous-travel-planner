@@ -1,4 +1,4 @@
-# MongoDB connection utility for Premium AI Travel
+# MongoDB connection utility for Safar Chaska
 
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure

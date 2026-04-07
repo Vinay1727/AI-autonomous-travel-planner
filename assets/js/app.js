@@ -542,7 +542,7 @@ document.getElementById('hotelCheckout').value = nextWeek.toISOString().split('T
 
 // Welcome message
 setTimeout(() => {
-    showToast('Welcome to Premium AI Travel AI! 🌍✨', 3000);
+    showToast('Welcome to Safar Chaska AI! 🌍✨', 3000);
 }, 1000);
 
-console.log('Premium AI Travel AI initialized successfully! 🚀');
+console.log('Safar Chaska AI initialized successfully! 🚀');

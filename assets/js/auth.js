@@ -56,7 +56,7 @@ const modalHTML = `
           <div class="auth-icon">
             <i class="fas fa-user-plus"></i>
           </div>
-          <h2>Join Premium AI Travel</h2>
+          <h2>Join Safar Chaska</h2>
           <p>Start your premium travel experience</p>
         </div>
         
@@ -527,7 +527,7 @@ signupFormElement.addEventListener('submit', async function (e) {
       closeModal();
       updateNavbar(data.user);
       const userName = data.user.name || 'Traveler';
-      showToast(`Welcome to Premium AI Travel, ${userName}!`);
+      showToast(`Welcome to Safar Chaska, ${userName}!`);
       pendingSignup = null;
 
     // If backend uses OTP flow, show OTP form to the user
@@ -574,7 +574,7 @@ if (otpFormElement) {
         closeModal();
         updateNavbar(data.user);
         const userName = data.user.name || pendingSignup.name || 'Traveler';
-        showToast(`Welcome to Premium AI Travel, ${userName}!`);
+        showToast(`Welcome to Safar Chaska, ${userName}!`);
         pendingSignup = null;
       } else {
         showToast(data.message || 'OTP verification failed', 'error');
