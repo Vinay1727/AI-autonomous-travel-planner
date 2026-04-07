@@ -1,4 +1,4 @@
-# MongoDB connection utility for LuxeTravel
+# MongoDB connection utility for Premium AI Travel
 
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure

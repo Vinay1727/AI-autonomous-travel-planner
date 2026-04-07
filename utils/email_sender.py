@@ -29,8 +29,8 @@ class EmailSender:
         try:
             # Create message
             message = MIMEMultipart("alternative")
-            message["Subject"] = "HCATA- Premium Travel - Verify Your Email"
-            message["From"] = f"HCATA- Premium Travel <{self.email_user}>"
+            message["Subject"] = "Premium AI Travel - Verify Your Email"
+            message["From"] = f"Premium AI Travel <{self.email_user}>"
             message["To"] = to_email
             
             # HTML email template
@@ -123,14 +123,14 @@ class EmailSender:
                 <div class="container">
                         <div class="header">
                         <div class="logo">✈️</div>
-                        <h1>HCATA- Prenium Travel</h1>
+                        <h1>Premium AI Travel</h1>
                         <p style="color: rgba(255, 255, 255, 0.7); margin: 0;">Premium AI Travel Planning</p>
                     </div>
                     
                     <div class="content">
                         <p class="greeting">Hello {user_name},</p>
                         <p style="color: rgba(255, 255, 255, 0.8); line-height: 1.6;">
-                            Thank you for joining HCATA- Prenium Travel! To complete your registration and start planning your dream journeys,
+                            Thank you for joining Premium AI Travel! To complete your registration and start planning your dream journeys,
                             please verify your email address using the OTP code below:
                         </p>
                         
@@ -148,10 +148,10 @@ class EmailSender:
                     
                     <div class="footer">
                         <p style="margin: 0 0 10px 0;">
-                            Need help? Contact us at <a href="mailto:support@hcata.ai" class="footer-link">support@hcata.ai</a>
+                            Need help? Contact us at <a href="mailto:support@travelplanner.ai" class="footer-link">support@travelplanner.ai</a>
                         </p>
                         <p style="margin: 0; font-size: 12px;">
-                            © 2024 HCATA- Prenium Travel. All rights reserved.
+                            © 2024 Premium AI Travel. All rights reserved.
                         </p>
                     </div>
                 </div>
@@ -180,8 +180,8 @@ class EmailSender:
         """Send welcome email after successful registration"""
         try:
             message = MIMEMultipart("alternative")
-            message["Subject"] = "Welcome to HCATA- Premium Travel! 🎉"
-            message["From"] = f"HCATA- Premium Travel <{self.email_user}>"
+            message["Subject"] = "Welcome to Premium AI Travel! 🎉"
+            message["From"] = f"Premium AI Travel <{self.email_user}>"
             message["To"] = to_email
             
             html = f"""
@@ -189,7 +189,7 @@ class EmailSender:
             <html>
             <body style="font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px;">
                 <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; padding: 40px;">
-                    <h1 style="color: #d4af37;">Welcome to HCATA- Prenium Travel, {user_name}! ✈️</h1>
+                    <h1 style="color: #d4af37;">Welcome to Premium AI Travel, {user_name}! ✈️</h1>
                     <p>Your account has been successfully verified. Start exploring premium travel destinations!</p>
                     <a href="http://localhost:8000" style="display: inline-block; background: #d4af37; color: black; padding: 12px 30px; text-decoration: none; border-radius: 8px; margin-top: 20px;">Start Planning</a>
                 </div>

@@ -152,6 +152,12 @@ a:hover {
     object-fit: contain;
 }
 
+.responsive-logo {
+    max-height: 50px;
+    width: auto;
+    display: block;
+}
+
 .nav-menu {
     display: flex;
     list-style: none;

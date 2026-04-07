@@ -542,7 +542,7 @@ document.getElementById('hotelCheckout').value = nextWeek.toISOString().split('T
 
 // Welcome message
 setTimeout(() => {
-    showToast('Welcome to LuxeTravel AI! 🌍✨', 3000);
+    showToast('Welcome to Premium AI Travel AI! 🌍✨', 3000);
 }, 1000);
 
-console.log('LuxeTravel AI initialized successfully! 🚀');
+console.log('Premium AI Travel AI initialized successfully! 🚀');
