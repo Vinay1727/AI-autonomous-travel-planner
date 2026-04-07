@@ -142,11 +142,14 @@ a:hover {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    text-decoration: none;
 }
 
-.nav-logo i {
-    color: #00AEEF;
-    font-size: 2rem;
+.nav-logo img {
+    height: 40px;
+    width: auto;
+    border-radius: 4px;
+    object-fit: contain;
 }
 
 .nav-menu {

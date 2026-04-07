@@ -19,8 +19,8 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <i class="fas fa-plane-departure"></i>
-                <span>HCATA-PremiumTravel</span>
+                <img src="../public/logo.jpeg" alt="HCATA Logo">
+                <span>HCATA</span>
             </div>
             <ul class="nav-menu" id="navMenu">
                 <li><a href="../home.html" class="nav-link">Home</a></li>
@@ -166,22 +166,46 @@
         const swapBtn = document.getElementById('swapBtn');
         const resultDiv = document.getElementById('conversionResult');
 
-        convertBtn.addEventListener('click', async () => {
-            const amount = parseFloat(document.getElementById('amount').value);
-            const from = document.getElementById('fromCurrency').value;
-            const to = document.getElementById('toCurrency').value;
+        // Restore state on load
+        window.addEventListener('load', () => {
+            const savedData = localStorage.getItem('last_currency_convert');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                document.getElementById('amount').value = data.amount || 100;
+                document.getElementById('fromCurrency').value = data.from || 'USD';
+                document.getElementById('toCurrency').value = data.to || 'EUR';
+                
+                // Only auto-convert if we have non-default or specifically saved data
+                performConversion();
+            } else {
+                performConversion();
+            }
+        });
+
+        // Form elements reference
+        const getCurrencyData = () => ({
+            amount: parseFloat(document.getElementById('amount').value),
+            from: document.getElementById('fromCurrency').value,
+            to: document.getElementById('toCurrency').value
+        });
+
+        async function performConversion(forceRefresh = false) {
+            const { amount, from, to } = getCurrencyData();
 
             if (!amount || amount <= 0) {
                 showToast('Please enter a valid amount', 'error');
                 return;
             }
 
+            // Save state
+            localStorage.setItem('last_currency_convert', JSON.stringify({ amount, from, to }));
+
             try {
                 const response = await apiCall('/api/currency/convert', {
                     amount: amount,
                     from_currency: from,
                     to_currency: to
-                });
+                }, forceRefresh);
 
                 if (response.success && response.data) {
                     document.getElementById('resultAmount').textContent =
@@ -189,27 +213,26 @@
                     document.getElementById('resultRate').textContent =
                         `1 ${from} = ${response.data.exchange_rate.toFixed(4)} ${to}`;
                     resultDiv.style.display = 'block';
-                    showToast('Conversion successful!');
+                    if (forceRefresh) showToast('Rates updated successfully!');
                 } else {
                     showToast('Conversion failed', 'error');
                 }
             } catch (error) {
-                console.error(error);
                 showToast('Failed to convert currency', 'error');
             }
-        });
+        }
+
+        convertBtn.addEventListener('click', () => performConversion(true));
 
         swapBtn.addEventListener('click', () => {
-            const from = document.getElementById('fromCurrency').value;
-            const to = document.getElementById('toCurrency').value;
+            const { from, to } = getCurrencyData();
             document.getElementById('fromCurrency').value = to;
             document.getElementById('toCurrency').value = from;
             resultDiv.style.display = 'none';
-        });
-
-        // Auto-convert on page load
-        window.addEventListener('load', () => {
-            convertBtn.click();
+            
+            // Save new state after swap
+            const newData = getCurrencyData();
+            localStorage.setItem('last_currency_convert', JSON.stringify(newData));
         });
     </script>
 </body>

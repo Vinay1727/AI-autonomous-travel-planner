@@ -82,8 +82,8 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <i class="fas fa-plane-departure"></i>
-                <span>HCATA-Premium Travel</span>
+                <img src="../public/logo.jpeg" alt="HCATA Logo">
+                <span>HCATA</span>
             </div>
             <ul class="nav-menu" id="navMenu">
                 <li><a href="../home.html" class="nav-link">Home</a></li>
@@ -192,8 +192,35 @@
 
     <script src="../assets/js/common.js"></script>
     <script>
-        // Interest tag selection
+        // Global state for interest tag selection
         const selectedInterests = new Set();
+
+        // Initialize Page and restore state
+        window.addEventListener('load', () => {
+            const savedData = localStorage.getItem('last_itinerary_data');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                
+                // Restore form values
+                document.getElementById('destination').value = data.destination || '';
+                document.getElementById('days').value = data.days || 5;
+                document.getElementById('budgetLevel').value = data.budget_level || 'Moderate';
+                
+                // Restore interests
+                if (data.interests && Array.from(data.interests).length > 0) {
+                    data.interests.forEach(interest => {
+                        selectedInterests.add(interest);
+                        const tag = document.querySelector(`.interest-tag[data-interest="${interest}"]`);
+                        if (tag) tag.classList.add('selected');
+                    });
+                }
+                
+                // Restore results if they exist in cache (apiCall handles this)
+                if (data.destination) {
+                    performItinerarySearch();
+                }
+            }
+        });
 
         document.querySelectorAll('.interest-tag').forEach(tag => {
             tag.addEventListener('click', () => {
@@ -208,24 +235,35 @@
             });
         });
 
-        document.getElementById('itineraryForm').addEventListener('submit', async (e) => {
+        document.getElementById('itineraryForm').addEventListener('submit', (e) => {
             e.preventDefault();
+            performItinerarySearch(true);
+        });
+
+        async function performItinerarySearch(forceRefresh = false) {
+            const destination = document.getElementById('destination').value;
+            const days = parseInt(document.getElementById('days').value);
+            const budget_level = document.getElementById('budgetLevel').value;
+            const interests = Array.from(selectedInterests);
 
             const data = {
-                destination: document.getElementById('destination').value,
-                days: parseInt(document.getElementById('days').value),
-                budget_level: document.getElementById('budgetLevel').value,
-                interests: Array.from(selectedInterests)
+                destination,
+                days,
+                budget_level,
+                interests
             };
+
+            // Save state (excluding large result string, apiCall handles caching results)
+            localStorage.setItem('last_itinerary_data', JSON.stringify(data));
 
             showLoading('results');
 
             try {
-                const response = await apiCall('/api/itinerary/enhanced', data);
+                const response = await apiCall('/api/itinerary/enhanced', data, forceRefresh);
 
                 if (response.success && response.itinerary) {
                     displayItinerary(response.itinerary);
-                    showToast('Itinerary generated successfully!');
+                    if (forceRefresh) showToast('Itinerary generated successfully!');
                 } else {
                     showError('results', 'Failed to generate itinerary');
                 }
@@ -233,10 +271,10 @@
                 showError('results', 'Failed to generate itinerary. Please try again.');
                 console.error(error);
             }
-        });
+        }
 
         function displayItinerary(itinerary) {
-            // Convert markdown-style text to HTML
+            // Helper to handle basic markdown-to-HTML conversion
             let html = itinerary
                 .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
                 .replace(/\*(.+?)\*/g, '<em>$1</em>')

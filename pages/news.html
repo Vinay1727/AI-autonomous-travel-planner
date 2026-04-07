@@ -81,8 +81,8 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <i class="fas fa-plane-departure"></i>
-                <span>HCATA-PremiumTravel</span>
+                <img src="../public/logo.jpeg" alt="HCATA Logo">
+                <span>HCATA</span>
             </div>
             <ul class="nav-menu" id="navMenu">
                 <li><a href="../home.html" class="nav-link">Home</a></li>
@@ -162,33 +162,53 @@
 
     <script src="../assets/js/common.js"></script>
     <script>
-        document.getElementById('newsForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const destination = document.getElementById('destination').value;
-            showLoading('results');
-
-            try {
-                const response = await apiCall('/api/news/travel', { city: destination });
-
-                if (response.success && response.news) {
-                    displayNews(response.news);
-                    showToast(`Found ${response.news.length} articles!`);
-                } else {
-                    showError('results', 'No news found for this destination');
-                }
-            } catch (error) {
-                showError('results', 'Failed to fetch news. Please try again.');
-                console.error(error);
+        // Initialize Page and restore state
+        window.addEventListener('load', () => {
+            const savedDestination = localStorage.getItem('last_news_destination');
+            if (savedDestination) {
+                document.getElementById('destination').value = savedDestination;
+                performSearch();
+            } else {
+                document.getElementById('destination').value = 'Paris';
+                performSearch();
             }
         });
 
-        function displayNews(articles) {
+        // Form submission
+        document.getElementById('newsForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            performSearch(true);
+        });
+
+        async function performSearch(forceRefresh = false) {
+            const destination = document.getElementById('destination').value.trim();
+            if (!destination) return;
+
+            // Save state
+            localStorage.setItem('last_news_destination', destination);
+
+            showLoading('results');
+
+            try {
+                const response = await apiCall('/api/news/travel', { city: destination }, forceRefresh);
+
+                if (response.success && response.news) {
+                    displayNews(response.news, destination);
+                    if (forceRefresh) showToast(`Updated news for ${destination}!`);
+                } else {
+                    showError('results', 'No news found for this destination. Try a different city.');
+                }
+            } catch (error) {
+                showError('results', 'Failed to fetch news. Please try again.');
+            }
+        }
+
+        function displayNews(articles, city) {
             if (!articles || articles.length === 0) {
                 document.getElementById('results').innerHTML = `
                     <div class="text-center" style="padding: 3rem;">
                         <i class="fas fa-newspaper" style="font-size: 4rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
-                        <p style="color: var(--text-secondary);">No news articles found.</p>
+                        <p style="color: var(--text-secondary);">No news found for ${city}.</p>
                     </div>
                 `;
                 return;
@@ -198,7 +218,7 @@
                 <div class="news-grid">
                     ${articles.map(article => `
                         <div class="news-card">
-                            ${article.image ? `<img src="${article.image}" alt="${article.title}" class="news-image" onerror="this.style.display='none'">` : ''}
+                            ${article.image ? `<img src="${article.image}" alt="${article.title}" class="news-image" onerror="this.src='https://via.placeholder.com/400x200?text=News'">` : ''}
                             <div class="news-content">
                                 <h3 class="news-title">${article.title || 'Untitled'}</h3>
                                 <p class="news-description">${article.description || 'No description available.'}</p>
@@ -216,12 +236,6 @@
 
             document.getElementById('results').innerHTML = html;
         }
-
-        // Auto-load some news on page load
-        window.addEventListener('load', () => {
-            document.getElementById('destination').value = 'Paris';
-            document.getElementById('newsForm').dispatchEvent(new Event('submit'));
-        });
     </script>
 </body>
 

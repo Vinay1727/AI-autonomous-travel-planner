@@ -92,8 +92,8 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <i class="fas fa-plane-departure"></i>
-                <span>LuxeTravel</span>
+                <img src="../public/logo.jpeg" alt="HCATA Logo">
+                <span>HCATA</span>
             </div>
             <ul class="nav-menu" id="navMenu">
                 <li><a href="../home.html" class="nav-link">Home</a></li>
@@ -196,39 +196,70 @@
         // Set default date to tomorrow
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
-        document.getElementById('flightDate').value = tomorrow.toISOString().split('T')[0];
+        const defaultDate = tomorrow.toISOString().split('T')[0];
+
+        // Initialize Page and restore state
+        window.addEventListener('load', () => {
+            const savedData = localStorage.getItem('last_flight_search');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                document.getElementById('fromCity').value = data.from_city || '';
+                document.getElementById('toCity').value = data.to_city || '';
+                document.getElementById('flightDate').value = data.date || defaultDate;
+                document.getElementById('passengers').value = data.passengers || 1;
+                
+                if (data.from_city && data.to_city) {
+                    performFlightSearch();
+                }
+            } else {
+                document.getElementById('flightDate').value = defaultDate;
+            }
+        });
 
         // Form submission
-        document.getElementById('flightForm').addEventListener('submit', async (e) => {
+        document.getElementById('flightForm').addEventListener('submit', (e) => {
             e.preventDefault();
+            performFlightSearch(true);
+        });
+
+        async function performFlightSearch(forceRefresh = false) {
+            const from_city = document.getElementById('fromCity').value;
+            const to_city = document.getElementById('toCity').value;
+            const date = document.getElementById('flightDate').value;
+            const passengers = parseInt(document.getElementById('passengers').value);
 
             const data = {
-                from_city: document.getElementById('fromCity').value,
-                to_city: document.getElementById('toCity').value,
-                date: document.getElementById('flightDate').value,
-                passengers: parseInt(document.getElementById('passengers').value)
+                from_city,
+                to_city,
+                date,
+                passengers
             };
+
+            // Save state
+            localStorage.setItem('last_flight_search', JSON.stringify(data));
 
             showLoading('results');
 
             try {
-                // Search flights
-                const flightResponse = await apiCall('/api/flights/search', data);
-
-                // Get booking links
-                const linksResponse = await apiCall('/api/flights/links', data);
+                // Search flights and get links in parallel (optimized)
+                const [flightResponse, linksResponse] = await Promise.all([
+                    apiCall('/api/flights/search', data, forceRefresh),
+                    apiCall('/api/flights/links', data, forceRefresh)
+                ]);
 
                 if (flightResponse.success) {
-                    displayFlights(flightResponse.flights, flightResponse.is_mock, linksResponse.links);
-                    showToast('Flights loaded successfully!');
+                    displayFlights(flightResponse.flights, flightResponse.is_mock, linksResponse);
+                    if (forceRefresh) showToast('Flights loaded successfully!');
+                } else {
+                    showError('results', 'No flights found for your search criteria.');
                 }
             } catch (error) {
                 showError('results', 'Failed to search flights. Please try again.');
                 console.error(error);
             }
-        });
+        }
 
-        function displayFlights(flights, isMock, links) {
+        function displayFlights(flights, isMock, linksData) {
             if (!flights || flights.length === 0) {
                 document.getElementById('results').innerHTML = `
                     <div class="text-center" style="padding: 3rem;">
@@ -281,18 +312,19 @@
             });
 
             // Add booking links
-            if (links && links.success) {
+            if (linksData && linksData.success && linksData.links) {
+                const links = linksData.links;
                 html += `
                     <div class="booking-links">
                         <h4><i class="fas fa-external-link-alt"></i> Book on:</h4>
                         <div class="link-buttons">
-                            <a href="${links.links.google_flights}" target="_blank" class="btn btn-secondary">
+                            <a href="${links.google_flights}" target="_blank" class="btn btn-secondary">
                                 <i class="fas fa-plane"></i> Google Flights
                             </a>
-                            <a href="${links.links.skyscanner}" target="_blank" class="btn btn-secondary">
+                            <a href="${links.skyscanner}" target="_blank" class="btn btn-secondary">
                                 <i class="fas fa-plane"></i> Skyscanner
                             </a>
-                            <a href="${links.links.kayak}" target="_blank" class="btn btn-secondary">
+                            <a href="${links.kayak}" target="_blank" class="btn btn-secondary">
                                 <i class="fas fa-plane"></i> Kayak
                             </a>
                         </div>

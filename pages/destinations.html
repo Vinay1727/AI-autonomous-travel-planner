@@ -220,8 +220,8 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <i class="fas fa-plane-departure"></i>
-                <span>HCATA-Premium Travel</span>
+                <img src="../public/logo.jpeg" alt="HCATA Logo">
+                <span>HCATA</span>
             </div>
             <ul class="nav-menu" id="navMenu">
                 <li><a href="../home.html" class="nav-link">Home</a></li>
@@ -339,30 +339,119 @@
 
     <script src="../assets/js/common.js"></script>
     <script>
+        // Global State
+        let currentSearch = {
+            destination: '',
+            duration: 5,
+            loadedTabs: new Set()
+        };
+
+        // Initialize Page
+        window.addEventListener('load', () => {
+            const savedSearch = localStorage.getItem('last_destination_search');
+            if (savedSearch) {
+                const data = JSON.parse(savedSearch);
+                document.getElementById('destination').value = data.destination || '';
+                document.getElementById('duration').value = data.duration || 5;
+                currentSearch.destination = data.destination;
+                currentSearch.duration = data.duration;
+                
+                if (currentSearch.destination) {
+                    performSearch();
+                }
+            } else {
+                // Default if no saved search
+                document.getElementById('destination').value = 'Paris';
+                document.getElementById('duration').value = 5;
+            }
+        });
+
         // Tab switching
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const tabName = btn.dataset.tab;
+                
+                // UI Update
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
                 btn.classList.add('active');
                 document.getElementById(`${tabName}-tab`).classList.add('active');
+                
+                // Lazy Load data for this tab if we have a destination
+                if (currentSearch.destination) {
+                    loadDataForTab(tabName);
+                }
             });
         });
 
         // Form submission
-        document.getElementById('searchForm').addEventListener('submit', async (e) => {
+        document.getElementById('searchForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            const destination = document.getElementById('destination').value;
-            const duration = parseInt(document.getElementById('duration').value);
-            await Promise.all([
-                loadVideos(destination),
-                loadAttractions(destination),
-                loadShopping(destination),
-                loadPackingList(destination, duration)
-            ]);
-            showToast('Destination data loaded successfully!');
+            performSearch(true);
         });
+
+        function performSearch(isNewSearch = false) {
+            const destination = document.getElementById('destination').value.trim();
+            const duration = parseInt(document.getElementById('duration').value);
+
+            if (!destination) return;
+
+            // Updated global state
+            currentSearch.destination = destination;
+            currentSearch.duration = duration;
+            
+            if (isNewSearch) {
+                currentSearch.loadedTabs.clear();
+                // Clear tab contents to show fresh loading
+                document.getElementById('videosResults').innerHTML = '';
+                document.getElementById('shoppingResults').innerHTML = '';
+                document.getElementById('packingResults').innerHTML = '';
+                document.getElementById('attractionsResults').innerHTML = '';
+            }
+
+            // Save state
+            localStorage.setItem('last_destination_search', JSON.stringify({
+                destination: currentSearch.destination,
+                duration: currentSearch.duration
+            }));
+
+            // Load data only for the ACTIVE tab
+            const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
+            loadDataForTab(activeTab);
+            
+            if (isNewSearch) {
+                showToast(`Searching for ${destination}...`);
+            }
+        }
+
+        async function loadDataForTab(tabName) {
+            // Don't reload if already loaded for this destination
+            const loadedKey = `${currentSearch.destination}_${tabName}`;
+            if (currentSearch.loadedTabs.has(loadedKey)) return;
+
+            const destination = currentSearch.destination;
+            const duration = currentSearch.duration;
+
+            try {
+                switch(tabName) {
+                    case 'videos':
+                        await loadVideos(destination);
+                        break;
+                    case 'shopping':
+                        await loadShopping(destination);
+                        break;
+                    case 'packing':
+                        await loadPackingList(destination, duration);
+                        break;
+                    case 'attractions':
+                        await loadAttractions(destination);
+                        break;
+                }
+                currentSearch.loadedTabs.add(loadedKey);
+            } catch (error) {
+                console.error(`Error loading ${tabName}:`, error);
+            }
+        }
 
         // Load YouTube Videos
         async function loadVideos(destination) {
@@ -376,7 +465,6 @@
                 }
             } catch (error) {
                 showError('videosResults', 'Failed to load videos');
-                console.error(error);
             }
         }
 
@@ -428,7 +516,6 @@
                 }
             } catch (error) {
                 showError('attractionsResults', 'Failed to load attractions');
-                console.error(error);
             }
         }
 
@@ -441,32 +528,6 @@
                     </h2>
                     <div style="line-height: 1.8; color: var(--text-secondary);">
                         ${sections.map(section => `<p style="margin-bottom: 1rem;">${section}</p>`).join('')}
-                    </div>
-                </div>
-                <div class="attraction-grid">
-                    <div class="attraction-card">
-                        <h3 style="color: var(--gold); margin-bottom: 1rem;">
-                            <i class="fas fa-camera"></i> Must-See Landmarks
-                        </h3>
-                        <p style="color: var(--text-secondary); line-height: 1.6;">
-                            Explore the iconic landmarks and historical sites that make ${destination} unique.
-                        </p>
-                    </div>
-                    <div class="attraction-card">
-                        <h3 style="color: var(--gold); margin-bottom: 1rem;">
-                            <i class="fas fa-palette"></i> Cultural Experiences
-                        </h3>
-                        <p style="color: var(--text-secondary); line-height: 1.6;">
-                            Immerse yourself in the local culture, museums, and art galleries.
-                        </p>
-                    </div>
-                    <div class="attraction-card">
-                        <h3 style="color: var(--gold); margin-bottom: 1rem;">
-                            <i class="fas fa-tree"></i> Natural Beauty
-                        </h3>
-                        <p style="color: var(--text-secondary); line-height: 1.6;">
-                            Discover parks, gardens, and natural attractions in and around ${destination}.
-                        </p>
                     </div>
                 </div>
             `;
@@ -485,7 +546,6 @@
                 }
             } catch (error) {
                 showError('shoppingResults', 'Failed to load shopping places');
-                console.error(error);
             }
         }
 
@@ -508,17 +568,17 @@
 
             const html = allPlaces.map(place => `
                 <div class="shopping-card">
-                    <img src="${place.image_url || 'https://source.unsplash.com/400x300/?shopping,mall'}" 
+                    <img src="${place.image_url || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400'}" 
                          alt="${place.name}" 
                          class="shopping-image"
-                         onerror="this.src='https://source.unsplash.com/400x300/?shopping'">
+                         onerror="this.src='https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400'">
                     <div class="shopping-content">
                         <h3 style="color: var(--gold); margin-bottom: 0.5rem;">${place.name}</h3>
                         <span class="category-badge">${place.category}</span>
                         <p style="color: var(--text-secondary); margin: 1rem 0; line-height: 1.6;">
                             ${place.address || 'Address not available'}
                         </p>
-                        ${place.distance_km ? `<p style="color: var(--gold); font-size: 0.9rem;"><i class="fas fa-map-marker-alt"></i> ${place.distance_km} km away</p>` : ''}
+                        ${place.distance ? `<p style="color: var(--gold); font-size: 0.9rem;"><i class="fas fa-map-marker-alt"></i> ${place.distance.toFixed(1)} km away</p>` : ''}
                     </div>
                 </div>
             `).join('');
@@ -542,7 +602,6 @@
                 }
             } catch (error) {
                 showError('packingResults', 'Failed to load packing list');
-                console.error(error);
             }
         }
 
@@ -554,15 +613,7 @@
             return 'winter';
         }
 
-        function displayPackingList(packingData, destination, days) {
-            // Parse the packing list if it's a string
-            let packingList;
-            if (typeof packingData === 'string') {
-                packingList = parsePackingListText(packingData, destination, days);
-            } else {
-                packingList = packingData;
-            }
-
+        function displayPackingList(packingList, destination, days) {
             const html = `
                 <div class="packing-list">
                     <h2 style="color: var(--gold); margin-bottom: 2rem; text-align: center;">
@@ -606,75 +657,11 @@
                         </div>
                     </div>
                     ` : ''}
-                    <div class="card" style="margin-top: 2rem; background: rgba(212, 175, 55, 0.1); border-color: var(--gold);">
-                        <h4 style="color: var(--gold); margin-bottom: 1rem;">
-                            <i class="fas fa-lightbulb"></i> Pro Tips
-                        </h4>
-                        <ul style="color: var(--text-secondary); line-height: 1.8; margin-left: 1.5rem;">
-                            <li>Pack light and leave room for souvenirs</li>
-                            <li>Check weather forecast before packing</li>
-                            <li>Keep valuables in carry-on luggage</li>
-                            <li>Bring a reusable water bottle</li>
-                            <li>Pack a small first-aid kit</li>
-                        </ul>
-                    </div>
                 </div>
             `;
             document.getElementById('packingResults').innerHTML = html;
         }
-
-        function parsePackingListText(text, destination, days) {
-            const lines = text.split('\n').filter(line => line.trim());
-            const essentials = [];
-            const clothing = [];
-            const electronics = [];
-
-            let currentCategory = 'essentials';
-
-            for (const line of lines) {
-                const trimmed = line.trim();
-                if (trimmed.toLowerCase().includes('clothing') || trimmed.toLowerCase().includes('clothes')) {
-                    currentCategory = 'clothing';
-                    continue;
-                } else if (trimmed.toLowerCase().includes('electronic')) {
-                    currentCategory = 'electronics';
-                    continue;
-                } else if (trimmed.toLowerCase().includes('essential')) {
-                    currentCategory = 'essentials';
-                    continue;
-                }
-
-                // Skip headers and empty lines
-                if (trimmed.startsWith('#') || trimmed.length < 3) continue;
-
-                // Extract item (remove bullets, numbers, etc.)
-                const item = trimmed.replace(/^[-*•\d.]+\s*/, '');
-
-                if (item.length > 2) {
-                    if (currentCategory === 'essentials') {
-                        essentials.push(item);
-                    } else if (currentCategory === 'clothing') {
-                        clothing.push(item);
-                    } else if (currentCategory === 'electronics') {
-                        electronics.push(item);
-                    }
-                }
-            }
-
-            return {
-                destination,
-                days,
-                essentials: essentials.length > 0 ? essentials : ['Passport', 'Tickets', 'Money', 'Phone', 'Medication'],
-                clothing: clothing.length > 0 ? clothing : ['T-shirts', 'Pants', 'Underwear', 'Socks', 'Jacket'],
-                electronics: electronics.length > 0 ? electronics : ['Phone charger', 'Camera', 'Adapter']
-            };
-        }
-
-        // Auto-load Paris on page load
-        window.addEventListener('load', () => {
-            document.getElementById('destination').value = 'Paris';
-            document.getElementById('searchForm').dispatchEvent(new Event('submit'));
-        });
+    </script>
     </script>
 </body>
 

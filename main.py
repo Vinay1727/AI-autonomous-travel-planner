@@ -30,6 +30,9 @@ from agents.package_list_generator import generate_packages
 from agents.itinerary import generate_itinerary
 from agents.shopping_places import ShoppingPlacesFinder
 import os
+import asyncio
+import functools
+from concurrent.futures import ThreadPoolExecutor
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -50,6 +53,15 @@ app.add_middleware(
 # Mount static files
 app.mount("/pages", StaticFiles(directory="pages"), name="pages")
 app.mount("/assets", StaticFiles(directory="assets"), name="assets")
+
+# Simple In-Memory Cache
+cache = {}
+
+def get_cache_key(prefix, *args, **kwargs):
+    key_parts = [prefix]
+    key_parts.extend([str(arg) for arg in args])
+    key_parts.extend([f"{k}:{v}" for k, v in sorted(kwargs.items())])
+    return "_".join(key_parts)
 
 # ==================== Request Models ====================
 
@@ -350,7 +362,9 @@ async def chat(request: ChatRequest):
     Chat with AI travel assistant
     """
     try:
-        response = get_chat_response(request.message, request.history)
+        # Chat responses are usually context-dependent, so we don't cache deeply here
+        # but we use to_thread to avoid blocking
+        response = await asyncio.to_thread(get_chat_response, request.message, request.history)
         return {
             "success": True,
             "response": response,
@@ -366,8 +380,14 @@ async def search_flights_endpoint(request: FlightSearchRequest):
     """
     Search for flights between cities
     """
+    cache_key = get_cache_key("flights", request.from_city, request.to_city, request.date, request.passengers)
+    if cache_key in cache:
+        return cache[cache_key]
+
     try:
-        result = search_flights(
+        # Use asyncio.to_thread for blocking call
+        result = await asyncio.to_thread(
+            search_flights,
             request.from_city,
             request.to_city,
             request.date,
@@ -376,19 +396,22 @@ async def search_flights_endpoint(request: FlightSearchRequest):
         
         # If API fails, provide mock data
         if "error" in result or not result.get("flights"):
-            mock_flights = get_mock_flights(request.from_city, request.to_city, request.date)
-            return {
+            mock_flights = await asyncio.to_thread(get_mock_flights, request.from_city, request.to_city, request.date)
+            response = {
                 "success": True,
                 "flights": mock_flights,
                 "is_mock": True,
                 "message": "Using demo data (API unavailable)"
             }
+        else:
+            response = {
+                "success": True,
+                "flights": result["flights"],
+                "is_mock": False
+            }
         
-        return {
-            "success": True,
-            "flights": result["flights"],
-            "is_mock": False
-        }
+        cache[cache_key] = response
+        return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -416,16 +439,22 @@ async def get_weather_endpoint(request: WeatherRequest):
     """
     Get weather information for a city
     """
+    cache_key = get_cache_key("weather", request.city)
+    if cache_key in cache:
+        return cache[cache_key]
+
     try:
-        weather_data = get_weather(request.city)
+        weather_data = await asyncio.to_thread(get_weather, request.city)
         
         if "error" in weather_data:
             raise HTTPException(status_code=404, detail=weather_data["error"])
         
-        return {
+        response = {
             "success": True,
             "data": weather_data
         }
+        cache[cache_key] = response
+        return response
     except HTTPException:
         raise
     except Exception as e:
@@ -438,12 +467,18 @@ async def estimate_budget_endpoint(request: BudgetRequest):
     """
     Estimate travel budget for destination
     """
+    cache_key = get_cache_key("budget", request.destination, request.days, request.budget_level)
+    if cache_key in cache:
+        return cache[cache_key]
+        
     try:
-        budget_data = estimate_budget(request.destination, request.days, request.budget_level)
-        return {
+        budget_data = await asyncio.to_thread(estimate_budget, request.destination, request.days, request.budget_level)
+        response = {
             "success": True,
             "data": budget_data
         }
+        cache[cache_key] = response
+        return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -466,12 +501,18 @@ async def recommend_activities_endpoint(request: ActivityRequest):
     """
     Get activity recommendations for destination
     """
+    cache_key = get_cache_key("activities", request.destination)
+    if cache_key in cache:
+        return cache[cache_key]
+
     try:
-        result = get_activities_and_food(request.destination)
-        return {
+        result = await asyncio.to_thread(get_activities_and_food, request.destination)
+        response = {
             "success": True,
             "data": result
         }
+        cache[cache_key] = response
+        return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -503,22 +544,29 @@ async def search_hotels_endpoint(request: HotelRequest):
     """
     Search for hotels in a city with enriched data (ratings, offers, images)
     """
+    cache_key = get_cache_key("hotels", request.city, request.checkin, request.checkout, request.guests)
+    if cache_key in cache:
+        return cache[cache_key]
+
     try:
-        hotels = search_hotels(request.city, radius=10000, limit=10)
+        hotels = await asyncio.to_thread(search_hotels, request.city, radius=10000, limit=10)
         
         # If no hotels found, return helpful message
         if not hotels or len(hotels) == 0:
-            return {
+            response = {
                 "success": False,
                 "hotels": [],
                 "message": f"No hotels found in {request.city}. Try popular cities like Paris, London, or Tokyo."
             }
+        else:
+            response = {
+                "success": True,
+                "hotels": hotels,
+                "is_mock": not bool(os.getenv("OPENTRIP_API_KEY"))
+            }
         
-        return {
-            "success": True,
-            "hotels": hotels,
-            "is_mock": not bool(os.getenv("OPENTRIP_API_KEY"))
-        }
+        cache[cache_key] = response
+        return response
     except Exception as e:
         print(f"Hotel search error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -536,64 +584,71 @@ async def search_shopping_places_endpoint(request: ShoppingRequest):
     """
     Search for shopping places in a city with images from Pexels/Unsplash
     """
+    cache_key = get_cache_key("shopping", request.city, request.radius_km, request.limit)
+    if cache_key in cache:
+        return cache[cache_key]
+
     try:
-        from agents.shopping_places import ShoppingPlacesFinder
+        def fetch_shopping_sync():
+            api_key = os.getenv("GEOAPIFY_API_KEY")
+            if not api_key:
+                # Return mock data if no API key
+                return {
+                    "success": True,
+                    "places": {
+                        "shopping_malls": [
+                            {
+                                "name": f"{request.city} Mall",
+                                "address": f"Central {request.city}",
+                                "distance": 2.5,
+                                "image_url": "https://source.unsplash.com/400x300/?shopping,mall"
+                            }
+                        ],
+                        "local_markets": [
+                            {
+                                "name": f"{request.city} Market",
+                                "address": f"Old Town, {request.city}",
+                                "distance": 1.8,
+                                "image_url": "https://source.unsplash.com/400x300/?market,shopping"
+                            }
+                        ],
+                        "retail_areas": []
+                    }
+                }
+            
+            finder = ShoppingPlacesFinder(api_key)
+            results = finder.find_shopping_places(
+                location=request.city,
+                radius_km=request.radius_km,
+                limit=request.limit
+            )
         
-        api_key = os.getenv("GEOAPIFY_API_KEY")
-        if not api_key:
-            # Return mock data if no API key
+            if "error" in results:
+                return {
+                    "success": False,
+                    "places": {},
+                    "message": results["error"]
+                }
+            
+            # Add images to each place
+            for category in ["shopping_malls", "local_markets", "retail_areas"]:
+                places = results.get(category, [])
+                for place in places:
+                    if "image_url" not in place or not place.get("image_url"):
+                        # Fetch image using the get_place_image method
+                        place["image_url"] = finder.get_place_image(place.get("name", "shopping"))
+                    # Rename distance_km to distance for frontend compatibility
+                    if "distance_km" in place:
+                        place["distance"] = place["distance_km"]
+            
             return {
                 "success": True,
-                "places": {
-                    "shopping_malls": [
-                        {
-                            "name": f"{request.city} Mall",
-                            "address": f"Central {request.city}",
-                            "distance": 2.5,
-                            "image_url": "https://source.unsplash.com/400x300/?shopping,mall"
-                        }
-                    ],
-                    "local_markets": [
-                        {
-                            "name": f"{request.city} Market",
-                            "address": f"Old Town, {request.city}",
-                            "distance": 1.8,
-                            "image_url": "https://source.unsplash.com/400x300/?market,shopping"
-                        }
-                    ],
-                    "retail_areas": []
-                }
+                "places": results
             }
-        
-        finder = ShoppingPlacesFinder(api_key)
-        results = finder.find_shopping_places(
-            location=request.city,
-            radius_km=request.radius_km,
-            limit=request.limit
-        )
-       
-        if "error" in results:
-            return {
-                "success": False,
-                "places": {},
-                "message": results["error"]
-            }
-        
-        # Add images to each place
-        for category in ["shopping_malls", "local_markets", "retail_areas"]:
-            places = results.get(category, [])
-            for place in places:
-                if "image_url" not in place or not place.get("image_url"):
-                    # Fetch image using the get_place_image method
-                    place["image_url"] = finder.get_place_image(place.get("name", "shopping"))
-                # Rename distance_km to distance for frontend compatibility
-                if "distance_km" in place:
-                    place["distance"] = place["distance_km"]
-        
-        return {
-            "success": True,
-            "places": results
-        }
+
+        response = await asyncio.to_thread(fetch_shopping_sync)
+        cache[cache_key] = response
+        return response
     except Exception as e:
         print(f"Shopping places error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -606,6 +661,10 @@ async def get_useful_links_endpoint(request: WeatherRequest):
     """
     Get useful travel links for destination
     """
+    cache_key = get_cache_key("links", request.city)
+    if cache_key in cache:
+        return cache[cache_key]
+
     try:
         # Return some default useful links
         links = [
@@ -613,10 +672,12 @@ async def get_useful_links_endpoint(request: WeatherRequest):
             {"title": "Lonely Planet", "url": f"https://www.lonelyplanet.com/search?q={request.city}"},
             {"title": "Google Maps", "url": f"https://www.google.com/maps/search/{request.city}"}
         ]
-        return {
+        response = {
             "success": True,
             "links": links
         }
+        cache[cache_key] = response
+        return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -625,6 +686,10 @@ async def generate_packing_list_endpoint(request: PackingListRequest):
     """
     Generate AI-powered packing list for trip
     """
+    cache_key = get_cache_key("packing", request.destination, request.days, request.season)
+    if cache_key in cache:
+        return cache[cache_key]
+
     try:
         from langchain_core.messages import HumanMessage
         from langchain_groq import ChatGroq
@@ -645,8 +710,10 @@ async def generate_packing_list_endpoint(request: PackingListRequest):
             }
         
         # Use AI to generate smart packing list
-        llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0.3, api_key=groq_api_key)
-        prompt = f"""Generate a comprehensive packing list for a {request.days}-day trip to {request.destination} during {request.season}.
+        # Wrap the LLM call in to_thread with timeout
+        async def fetch_packing_ai():
+            llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0.3, api_key=groq_api_key)
+            prompt = f"""Generate a comprehensive packing list for a {request.days}-day trip to {request.destination} during {request.season}.
 
 Organize items into these categories:
 1. Essentials (travel documents, money, health items)
@@ -657,11 +724,15 @@ Return ONLY items relevant to this specific destination and season.
 Format each category as a simple list. Include 5-8 items per category.
 Be practical and specific to {request.destination}'s climate and culture."""
 
+            result = await asyncio.to_thread(llm.invoke, [HumanMessage(content=prompt)])
+            return result.content
+
         try:
-            result = llm.invoke([HumanMessage(content=prompt)]).content
+            # Add timeout to LLM call
+            result_content = await asyncio.wait_for(fetch_packing_ai(), timeout=10.0)
             
             # Parse the AI response
-            lines = result.split('\n')
+            lines = result_content.split('\n')
             essentials = []
             clothing = []
             electronics = []
@@ -701,7 +772,7 @@ Be practical and specific to {request.destination}'s climate and culture."""
             if not electronics:
                 electronics = ["Phone charger", "Camera", "Power adapter"]
             
-            return {
+            response = {
                 "success": True,
                 "packing_list": {
                     "essentials": essentials[:8],
@@ -711,7 +782,9 @@ Be practical and specific to {request.destination}'s climate and culture."""
                     "days": request.days
                 }
             }
-        except Exception as ai_error:
+            cache[cache_key] = response
+            return response
+        except (Exception, asyncio.TimeoutError) as ai_error:
             print(f"AI packing list error: {ai_error}")
             # Fallback to basic list
             return {
@@ -732,12 +805,18 @@ async def recommend_cuisine_endpoint(request: CuisineRequest):
     """
     Get cuisine recommendations for destination
     """
+    cache_key = get_cache_key("cuisine", request.destination)
+    if cache_key in cache:
+        return cache[cache_key]
+
     try:
-        cuisines = get_cuisines(request.destination, radius=5000, limit=10)
-        return {
+        cuisines = await asyncio.to_thread(get_cuisines, request.destination, radius=5000, limit=10)
+        response = {
             "success": True,
             "cuisines": cuisines
         }
+        cache[cache_key] = response
+        return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -746,19 +825,25 @@ async def find_attractions_endpoint(request: AttractionsRequest):
     """
     Find tourist attractions in destination
     """
+    cache_key = get_cache_key("attractions", request.destination)
+    if cache_key in cache:
+        return cache[cache_key]
+
     try:
-        result = get_attractions(request.destination)
+        result = await asyncio.to_thread(get_attractions, request.destination)
         # get_attractions returns {"success": bool, "attractions": string}
         if result.get("success"):
-            return {
+            response = {
                 "success": True,
                 "attractions": result.get("attractions", "")
             }
         else:
-            return {
+            response = {
                 "success": False,
                 "attractions": result.get("attractions", "No information available")
             }
+        cache[cache_key] = response
+        return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -769,16 +854,23 @@ async def get_youtube_videos(request: WeatherRequest):
     """
     Get YouTube travel videos for destination
     """
+    cache_key = get_cache_key("videos", request.city)
+    if cache_key in cache:
+        return cache[cache_key]
+
     try:
-        videos = get_destination_video_data(
+        videos = await asyncio.to_thread(
+            get_destination_video_data,
             destination=request.city,
             max_results=6,
             prefer_with_captions=True
         )
-        return {
+        response = {
             "success": True,
             "videos": videos
         }
+        cache[cache_key] = response
+        return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -787,16 +879,23 @@ async def search_events(request: WeatherRequest):
     """
     Find festivals and events at destination
     """
+    cache_key = get_cache_key("events", request.city)
+    if cache_key in cache:
+        return cache[cache_key]
+
     try:
-        events = fetch_festivals_and_events(
+        events = await asyncio.to_thread(
+            fetch_festivals_and_events,
             location=request.city,
             days_ahead=30,
             keyword="festival"
         )
-        return {
+        response = {
             "success": True,
             "events": events
         }
+        cache[cache_key] = response
+        return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

@@ -38,8 +38,29 @@ function formatDate(dateString) {
     });
 }
 
-// API Call Wrapper
-async function apiCall(endpoint, data = {}) {
+// API Call Wrapper with Client-side Caching (localStorage)
+async function apiCall(endpoint, data = {}, forceRefresh = false) {
+    const cacheKey = `api_cache_${endpoint}_${JSON.stringify(data)}`;
+    
+    // Check if data exists in cache and not forcing refresh
+    if (!forceRefresh) {
+        const cachedData = localStorage.getItem(cacheKey);
+        if (cachedData) {
+            try {
+                const { timestamp, response } = JSON.parse(cachedData);
+                // Cache valid for 30 minutes (1800000ms)
+                if (Date.now() - timestamp < 1800000) {
+                    console.log(`Using cached data for ${endpoint}`);
+                    return response;
+                } else {
+                    localStorage.removeItem(cacheKey);
+                }
+            } catch (e) {
+                localStorage.removeItem(cacheKey);
+            }
+        }
+    }
+
     try {
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
             method: 'POST',
@@ -53,10 +74,39 @@ async function apiCall(endpoint, data = {}) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        return await response.json();
+        const jsonResponse = await response.json();
+        
+        // Save to cache
+        try {
+            localStorage.setItem(cacheKey, JSON.stringify({
+                timestamp: Date.now(),
+                response: jsonResponse
+            }));
+        } catch (e) {
+            // If localStorage is full, clear old cache entries
+            console.warn('LocalStorage full, clearing old API cache');
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('api_cache_')) {
+                    localStorage.removeItem(key);
+                }
+            }
+        }
+
+        return jsonResponse;
     } catch (error) {
         console.error('API Error:', error);
         throw error;
+    }
+}
+
+function clearApiCache() {
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('api_cache_')) {
+            localStorage.removeItem(key);
+            i--; // Adjust index as items are removed
+        }
     }
 }
 
