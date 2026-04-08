@@ -82,6 +82,18 @@ body {
     align-items: center;
     gap: 0.5rem;
     color: var(--text-light);
+    white-space: nowrap;
+}
+
+.nav-logo img,
+.responsive-logo {
+    height: 40px;
+    width: auto;
+    max-width: 40px;
+    display: block;
+    border-radius: 4px;
+    object-fit: contain;
+    flex-shrink: 0;
 }
 
 .nav-logo i {

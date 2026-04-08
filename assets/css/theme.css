@@ -143,19 +143,26 @@ a:hover {
     align-items: center;
     gap: 0.75rem;
     text-decoration: none;
+    white-space: nowrap;
 }
 
-.nav-logo img {
-    height: 40px;
+.nav-logo img,
+.responsive-logo {
+    height: 45px;
     width: auto;
+    max-width: 45px;
+    display: block;
     border-radius: 4px;
     object-fit: contain;
+    flex-shrink: 0;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .responsive-logo {
     max-height: 50px;
-    width: auto;
-    display: block;
+    min-width: 45px;
 }
 
 .nav-menu {
